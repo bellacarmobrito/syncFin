@@ -1,0 +1,66 @@
+body {
+    font-family: Inter, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+.form-wrapper {
+    width: 611px;
+    max-width: 100%;
+    margin: auto;
+
+}
+
+.form-wrapper input {
+    width: 100%;
+}
+
+.form-wrapper .card {
+    padding: 20px;
+}
+
+.card-header {
+    border-bottom: none;
+}
+
+h1, h2, h5, input, label {
+    color: #1F2A44; !important;
+}
+
+input, label, textarea, input::placeholder {
+    font-size: 15px; !important;
+
+}
+
+.btn {
+    min-width: 120px;
+}
+
+
+.btn-primary {
+    background-color: #1F2A44;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+.btn-primary:hover {
+    background-color: #1F2A44;
+}
+
+.btn-secondary {
+    font-size: 14px;
+}
+
+.table th,
+.table td, strong, p {
+     font-size: 14px;
+}
+
+.custom-arrow::after {
+    filter: brightness(0) invert(1);
+}
