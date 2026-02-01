@@ -19,7 +19,6 @@ import java.util.List;
 @WebServlet("/cadastro")
 public class CadastroServelet extends HttpServlet {
 
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -40,27 +39,6 @@ public class CadastroServelet extends HttpServlet {
                 excluir(req, resp);
 
         }
-
-    }
-
-    private void excluir(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        int codigo = Integer.parseInt(req.getParameter("codigoExcluir"));
-
-        CadastroDao dao = null;
-
-        try {
-            dao = new CadastroDao();
-            dao.inativarCadastro(codigo);
-            req.setAttribute("mensagem", "cadastro desativado com sucesso!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (EntidadeNaoEncontradaException e) {
-            req.setAttribute("erro", "Erro ao desativar cadastro");
-        } finally {
-            fecharDao(dao);
-        }
-        listar(req, resp);
     }
 
     private void cadastrar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, NoSuchAlgorithmException {
@@ -75,34 +53,27 @@ public class CadastroServelet extends HttpServlet {
 
         Cadastro cadastro = new Cadastro(nomeCliente, telefone, cpf, email, senha, status);
 
-        CadastroDao dao = null;
-
-        try {
-            dao = new CadastroDao();
+        try (CadastroDao dao = new CadastroDao()) {
             dao.cadastrar(cadastro);
             req.setAttribute("mensagem", "Cadastro realizado com sucesso!");
         } catch (SQLException e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro  ao cadastrar");
-        } finally {
-            fecharDao(dao);
         }
-
         req.getRequestDispatcher("cadastro-cliente.jsp").forward(req, resp);
     }
 
     public void editar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        CadastroDao dao = null;
+        try (CadastroDao dao = new CadastroDao()) {
 
-        try {
-            dao = new CadastroDao();
             int idCliente = Integer.parseInt(req.getParameter("codigo"));
             String nomeCliente = req.getParameter("nomeCliente");
             String telefone = req.getParameter("telefone");
             String cpf = req.getParameter("cpf");
             String email = req.getParameter("email");
             String senha = req.getParameter("senha");
+
             senha = CriptografiaUtils.criptografar(senha);
 
             Cadastro cadastro = new Cadastro();
@@ -114,31 +85,35 @@ public class CadastroServelet extends HttpServlet {
             cadastro.setSenha(senha);
 
             dao.atualizar(cadastro);
+
             HttpSession session = req.getSession();
             session.setAttribute("cliente", cadastro);
             req.setAttribute("mensagem", "Cadastro atualizado com sucesso!");
 
-            listar(req, resp);
             resp.sendRedirect("cadastro?acao=listar");
+
         } catch (SQLException e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao atualizar");
+            req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
-        } finally {
-            fecharDao(dao);
         }
-
     }
 
-    private static void fecharDao(CadastroDao dao) {
-        try {
-            if (dao != null) {
-                dao.fecharConexao();
-            }
+    private void excluir(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        int codigo = Integer.parseInt(req.getParameter("codigoExcluir"));
+
+        try (CadastroDao dao = new CadastroDao()) {
+            dao.inativarCadastro(codigo);
+            req.setAttribute("mensagem", "cadastro desativado com sucesso!");
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (EntidadeNaoEncontradaException e) {
+            req.setAttribute("erro", "Erro ao desativar cadastro");
         }
+        listar(req, resp);
     }
 
     @Override
@@ -154,15 +129,12 @@ public class CadastroServelet extends HttpServlet {
                 abrirForm(req, resp);
                 break;
         }
-
     }
 
     private void abrirForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        CadastroDao dao = null;
+        try (CadastroDao dao = new CadastroDao()) {
 
-        try {
-            dao = new CadastroDao();
             int id = Integer.parseInt(req.getParameter("codigo"));
             Cadastro cadastro = dao.pesquisar(id);
             req.setAttribute("cadastro", cadastro);
@@ -171,23 +143,16 @@ public class CadastroServelet extends HttpServlet {
             throw new RuntimeException(e);
         } catch (EntidadeNaoEncontradaException e) {
             throw new RuntimeException(e);
-        } finally {
-          fecharDao(dao);
         }
     }
 
     private void listar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Cadastro> clientes;
 
-        CadastroDao dao = null;
-
-        try {
-            dao = new CadastroDao();
+        try (CadastroDao dao = new CadastroDao()) {
             clientes = dao.getAll();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-           fecharDao(dao);
         }
         req.setAttribute("clientes", clientes);
         req.getRequestDispatcher("visualizar-cadastro.jsp").forward(req, resp);

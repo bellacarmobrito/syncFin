@@ -1,7 +1,6 @@
 package br.com.fiap.syncfin.dao;
 
 import br.com.fiap.syncfin.exception.EntidadeNaoEncontradaException;
-import br.com.fiap.syncfin.factory.ConnectionFactory;
 import br.com.fiap.syncfin.model.Cadastro;
 import br.com.fiap.syncfin.model.ContaBancaria;
 
@@ -9,182 +8,165 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContaBancariaDao {
-
-    private Connection conexao;
+public class ContaBancariaDao extends BaseDao {
 
     public ContaBancariaDao() throws SQLException {
-        conexao = ConnectionFactory.getConnection();
+        super();
     }
 
-    public void fecharConexao() throws SQLException {
-        conexao.close();
+    private ContaBancaria mapConta(ResultSet rs) throws SQLException {
+        Cadastro cliente = new Cadastro();
+        cliente.setIdCliente(rs.getInt("ID_CLIENTE"));
+
+        ContaBancaria conta = new ContaBancaria(
+                cliente,
+                rs.getString("NM_INSTITUICAO"),
+                rs.getString("AGENCIA"),
+                rs.getString("NR_CONTA"),
+                rs.getString("TIPO_CONTA"),
+                rs.getDouble("SALDO_ATUAL")
+        );
+        conta.setIdConta(rs.getInt("ID_CONTA"));
+        return conta;
     }
 
     public int cadastrarConta(ContaBancaria conta) throws SQLException {
 
-        Statement stmtSeq = conexao.createStatement();
-        ResultSet rs = stmtSeq.executeQuery("SELECT SEQ_T_CONTA_BANCARIA.NEXTVAL FROM DUAL");
+        int idGerado;
 
-        int idGerado = -1;
+        try (Statement stmtSeq = conexao.createStatement();
+             ResultSet rs = stmtSeq.executeQuery("SELECT SEQ_T_CONTA_BANCARIA.NEXTVAL FROM DUAL")) {
 
-        if (rs.next()) {
+            if (!rs.next()) {
+                throw new SQLException("Não foi possível gerar ID da conta bancária");
+            }
             idGerado = rs.getInt(1);
+
+            String sql = "INSERT INTO T_CONTA_BANCARIA (ID_CONTA, ID_CLIENTE, NM_INSTITUICAO, AGENCIA, NR_CONTA, TIPO_CONTA, SALDO_ATUAL) VALUES (?,?,?,?,?,?,?)";
+
+            try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+                stm.setInt(1, idGerado);
+                stm.setInt(2, conta.getCliente().getIdCliente());
+                stm.setString(3, conta.getNomeInstituicao());
+                stm.setString(4, conta.getAgencia());
+                stm.setString(5, conta.getNumeroConta());
+                stm.setString(6, conta.getTipoConta());
+                stm.setDouble(7, conta.getSaldo());
+                stm.executeUpdate();
+
+                return idGerado;
+            }
         }
-
-        PreparedStatement stm = conexao.prepareStatement("INSERT INTO T_CONTA_BANCARIA (ID_CONTA, ID_CLIENTE, NM_INSTITUICAO, AGENCIA, NR_CONTA, TIPO_CONTA, SALDO_ATUAL) VALUES (?,?,?,?,?,?,?)");
-        stm.setInt(1, idGerado);
-        stm.setInt(2, conta.getCliente().getIdCliente());
-        stm.setString(3, conta.getNomeInstituicao());
-        stm.setString(4, conta.getAgencia());
-        stm.setString(5, conta.getNumeroConta());
-        stm.setString(6, conta.getTipoConta());
-        stm.setDouble(7, conta.getSaldo());
-        stm.executeUpdate();
-
-        return idGerado;
     }
 
-
     public ContaBancaria pesquisarContaPorId(int idConta) throws SQLException, EntidadeNaoEncontradaException {
-        PreparedStatement stm = conexao.prepareStatement("SELECT * FROM T_CONTA_BANCARIA WHERE ID_CONTA = ?");
-        stm.setInt(1, idConta);
-        ResultSet rs = stm.executeQuery();
+        String sql = "SELECT * FROM T_CONTA_BANCARIA WHERE ID_CONTA = ?";
 
-        if (rs.next()) {
-            Cadastro cliente = new Cadastro();
-            cliente.setIdCliente(rs.getInt("ID_CLIENTE"));
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, idConta);
 
-            ContaBancaria conta = new ContaBancaria(
-                    cliente,
-                    rs.getString("NM_INSTITUICAO"),
-                    rs.getString("AGENCIA"),
-                    rs.getString("NR_CONTA"),
-                    rs.getString("TIPO_CONTA"),
-                    rs.getDouble("SALDO_ATUAL")
-            );
-            conta.setIdConta(rs.getInt("ID_CONTA"));
-            return conta;
-        } else {
-            throw new EntidadeNaoEncontradaException("Não há conta cadastrada com o ID informado.");
+            try (ResultSet rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    throw new EntidadeNaoEncontradaException("Não há conta cadastrada com o ID informado.");
+                }
+                return mapConta(rs);
+            }
         }
     }
 
     public ContaBancaria pesquisarContaPorIdCliente(int idCliente) throws SQLException, EntidadeNaoEncontradaException {
-        PreparedStatement stm = conexao.prepareStatement("SELECT * FROM T_CONTA_BANCARIA WHERE ID_CLIENTE = ?");
-        stm.setInt(1, idCliente);
-        ResultSet rs = stm.executeQuery();
 
-        if (rs.next()) {
-            Cadastro cliente = new Cadastro();
-            cliente.setIdCliente(rs.getInt("ID_CLIENTE"));
+        String sql = "SELECT * FROM T_CONTA_BANCARIA WHERE ID_CLIENTE = ?";
 
-            ContaBancaria conta = new ContaBancaria(
-                    cliente,
-                    rs.getString("NM_INSTITUICAO"),
-                    rs.getString("AGENCIA"),
-                    rs.getString("NR_CONTA"),
-                    rs.getString("TIPO_CONTA"),
-                    rs.getDouble("SALDO_ATUAL")
-            );
-            conta.setIdConta(rs.getInt("ID_CONTA"));
-            return conta;
-        } else {
-            throw new EntidadeNaoEncontradaException("Não há conta cadastrada com o ID informado.");
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, idCliente);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    throw new EntidadeNaoEncontradaException("Não há conta cadastrada para o cliente informado.");
+                }
+                return mapConta(rs);
+            }
         }
     }
 
     public List<ContaBancaria> getAllContas() throws SQLException {
+
         List<ContaBancaria> contas = new ArrayList<>();
-        PreparedStatement stm = conexao.prepareStatement("SELECT * FROM T_CONTA_BANCARIA");
-        ResultSet rs = stm.executeQuery();
+        String sql = "SELECT * FROM T_CONTA_BANCARIA";
 
-        while (rs.next()) {
-            Cadastro cliente = new Cadastro();
-            cliente.setIdCliente(rs.getInt("ID_CLIENTE"));
+        try (PreparedStatement stm = conexao.prepareStatement(sql);
+             ResultSet rs = stm.executeQuery()) {
 
-            ContaBancaria conta = new ContaBancaria(
-                    cliente,
-                    rs.getString("NM_INSTITUICAO"),
-                    rs.getString("AGENCIA"),
-                    rs.getString("NR_CONTA"),
-                    rs.getString("TIPO_CONTA"),
-                    rs.getDouble("SALDO_ATUAL")
-            );
-            conta.setIdConta(rs.getInt("ID_CONTA"));
-
-            contas.add(conta);
+            while (rs.next()) {
+                contas.add(mapConta(rs));
+            }
+            return contas;
         }
-
-        return contas;
     }
 
     public List<ContaBancaria> pesquisarContasPorCliente(int idCliente) throws SQLException {
+
         List<ContaBancaria> lista = new ArrayList<>();
+        String sql = "SELECT * FROM T_CONTA_BANCARIA WHERE ID_CLIENTE = ?";
 
-        PreparedStatement stm = conexao.prepareStatement("SELECT * FROM T_CONTA_BANCARIA WHERE ID_CLIENTE = ?");
-        stm.setInt(1, idCliente);
-        ResultSet rs = stm.executeQuery();
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, idCliente);
 
-        while (rs.next()) {
-            Cadastro cliente = new Cadastro();
-            cliente.setIdCliente(rs.getInt("ID_CLIENTE"));
-
-            ContaBancaria conta = new ContaBancaria(
-                    cliente,
-                    rs.getString("NM_INSTITUICAO"),
-                    rs.getString("AGENCIA"),
-                    rs.getString("NR_CONTA"),
-                    rs.getString("TIPO_CONTA"),
-                    rs.getDouble("SALDO_ATUAL")
-            );
-            conta.setIdConta(rs.getInt("ID_CONTA"));
-
-            lista.add(conta);
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapConta(rs));
+                }
+                return lista;
+            }
         }
-
-        return lista;
     }
 
-
     public void atualizarConta(ContaBancaria conta) throws SQLException {
-        PreparedStatement stm = conexao.prepareStatement("UPDATE T_CONTA_BANCARIA SET NM_INSTITUICAO = ?, AGENCIA = ?, NR_CONTA = ?, TIPO_CONTA = ?, SALDO_ATUAL = ? WHERE ID_CONTA = ?");
-        stm.setString(1, conta.getNomeInstituicao());
-        stm.setString(2, conta.getAgencia());
-        stm.setString(3, conta.getNumeroConta());
-        stm.setString(4, conta.getTipoConta());
-        stm.setDouble(5, conta.getSaldo());
-        stm.setInt(6, conta.getIdConta());
 
-        int linhasAfetadas = stm.executeUpdate();
+        String sql = "UPDATE T_CONTA_BANCARIA SET NM_INSTITUICAO = ?, AGENCIA = ?, NR_CONTA = ?, TIPO_CONTA = ?, SALDO_ATUAL = ? WHERE ID_CONTA = ?";
 
-        if (linhasAfetadas == 0) {
-            throw new SQLException("Nenhuma conta foi atualizada. Verifique o ID da conta.");
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setString(1, conta.getNomeInstituicao());
+            stm.setString(2, conta.getAgencia());
+            stm.setString(3, conta.getNumeroConta());
+            stm.setString(4, conta.getTipoConta());
+            stm.setDouble(5, conta.getSaldo());
+            stm.setInt(6, conta.getIdConta());
+
+            int linhasAfetadas = stm.executeUpdate();
+
+            if (linhasAfetadas == 0) {
+                throw new SQLException("Nenhuma conta foi atualizada. Verifique o ID da conta.");
+            }
         }
     }
 
     public void removerConta(int idConta) throws SQLException, EntidadeNaoEncontradaException {
-        PreparedStatement stm = conexao.prepareStatement("DELETE FROM T_CONTA_BANCARIA WHERE ID_CONTA = ?");
-        stm.setInt(1, idConta);
-        int linha = stm.executeUpdate();
 
-        if (linha == 0) {
-            throw new EntidadeNaoEncontradaException("Conta não localizada.");
+        String sql = "DELETE FROM T_CONTA_BANCARIA WHERE ID_CONTA = ?";
+
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, idConta);
+            int linha = stm.executeUpdate();
+
+            if (linha == 0) {
+                throw new EntidadeNaoEncontradaException("Conta não localizada.");
+            }
         }
     }
 
     public double calcularSaldoPorCliente(int idCliente) throws SQLException {
-        PreparedStatement stm = conexao.prepareStatement("SELECT SUM(SALDO_ATUAL) AS TOTAL FROM T_CONTA_BANCARIA WHERE ID_CLIENTE = ?");
-        stm.setInt(1, idCliente);
-        ResultSet rs = stm.executeQuery();
 
-        if(rs.next()) {
-            return rs.getDouble("TOTAL");
-        } else {
-            return 0;
+        String sql = "SELECT SUM(SALDO_ATUAL) AS TOTAL FROM T_CONTA_BANCARIA WHERE ID_CLIENTE = ?";
+
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, idCliente);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                return rs.next() ? rs.getDouble("TOTAL") : 0;
+            }
         }
+
     }
-
-
-
 }
