@@ -167,6 +167,60 @@ public class ContaBancariaDao extends BaseDao {
                 return rs.next() ? rs.getDouble("TOTAL") : 0;
             }
         }
+    }
+
+    public void removerContaDoCliente(int idConta, int idCliente) throws SQLException, EntidadeNaoEncontradaException {
+        String sql = "DELETE FROM T_CONTA_BANCARIA WHERE ID_CONTA = ? AND ID_CLIENTE = ?";
+
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, idConta);
+            stm.setInt(2, idCliente);
+
+            int linhas = stm.executeUpdate();
+
+            if (linhas == 0) {
+                throw new EntidadeNaoEncontradaException("Conta não encontrada ou acesso negado.");
+            }
+        }
+    }
+
+    public void atualizarContaDoCliente(ContaBancaria conta, int idCliente)
+            throws SQLException, EntidadeNaoEncontradaException {
+
+        String sql = "UPDATE T_CONTA_BANCARIA SET NM_INSTITUICAO = ?, AGENCIA = ?, NR_CONTA = ?, TIPO_CONTA = ?, SALDO_ATUAL = ? WHERE ID_CONTA = ? AND ID_CLIENTE = ?";
+
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setString(1, conta.getNomeInstituicao());
+            stm.setString(2, conta.getAgencia());
+            stm.setString(3, conta.getNumeroConta());
+            stm.setString(4, conta.getTipoConta());
+            stm.setDouble(5, conta.getSaldo());
+            stm.setInt(6, conta.getIdConta());
+            stm.setInt(7, idCliente);
+
+            int linhas = stm.executeUpdate();
+            if (linhas == 0) {
+                throw new EntidadeNaoEncontradaException("Conta não encontrada ou acesso negado.");
+            }
+        }
+    }
+
+    public ContaBancaria pesquisarContaPorIdDoCliente(int idConta, int idCliente) throws SQLException, EntidadeNaoEncontradaException {
+        String sql = "SELECT * FROM T_CONTA_BANCARIA WHERE ID_CLIENTE = ? AND ID_CONTA = ?";
+
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, idCliente);
+            stm.setInt(2, idConta);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    throw new EntidadeNaoEncontradaException("Não há conta cadastrada para o cliente informado.");
+                }
+                return mapConta(rs);
+            }
+        }
 
     }
+
 }
+
