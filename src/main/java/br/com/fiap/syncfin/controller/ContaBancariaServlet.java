@@ -1,7 +1,6 @@
 package br.com.fiap.syncfin.controller;
 
 import br.com.fiap.syncfin.dao.ContaBancariaDao;
-import br.com.fiap.syncfin.exception.EntidadeNaoEncontradaException;
 import br.com.fiap.syncfin.model.Cadastro;
 import br.com.fiap.syncfin.model.ContaBancaria;
 import jakarta.servlet.ServletException;
