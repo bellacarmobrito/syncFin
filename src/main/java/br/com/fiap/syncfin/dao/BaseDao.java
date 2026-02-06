@@ -5,7 +5,7 @@ import br.com.fiap.syncfin.factory.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public abstract class BaseDao implements AutoCloseable{
+public abstract class BaseDao implements AutoCloseable {
 
     protected Connection conexao;
 
@@ -14,13 +14,9 @@ public abstract class BaseDao implements AutoCloseable{
     }
 
     @Override
-    public void close() {
-        try{
-            if(conexao != null && !conexao.isClosed()){
-                conexao.close();
-            }
-        } catch(SQLException e){
-            e.printStackTrace();
+    public void close() throws SQLException {
+        if (conexao != null && !conexao.isClosed()) {
+            conexao.close();
         }
     }
 }
