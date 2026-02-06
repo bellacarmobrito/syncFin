@@ -206,7 +206,6 @@ public class DespesaServlet extends HttpServlet {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao cadastrar despesa");
         }
-
         req.getRequestDispatcher("cadastro-despesa.jsp").forward(req, resp);
     }
 

@@ -20,6 +20,23 @@ import java.util.List;
 @WebServlet("/receita")
 public class ReceitaServlet extends HttpServlet {
 
+    private Cadastro getClienteLogado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+
+        if (session == null) {
+            resp.sendRedirect("index.jsp");
+            return null;
+        }
+
+        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
+
+        if (cliente == null) {
+            resp.sendRedirect("index.jsp");
+            return null;
+        }
+        return cliente;
+    }
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String acao = req.getParameter("acao");
 
@@ -32,30 +49,33 @@ public class ReceitaServlet extends HttpServlet {
 
     private void abrirFormEdicao(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ReceitaDao dao = null;
+        Cadastro cliente = getClienteLogado(req, resp);
+        if (cliente == null) return;
 
+        int idReceita;
         try {
-            dao = new ReceitaDao();
-            int idReceita = Integer.parseInt(req.getParameter("id"));
-            Receita receita = dao.pesquisarReceitaPorId(idReceita);
+            idReceita = Integer.parseInt(req.getParameter("id"));
+        } catch (NumberFormatException e) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "ID de receita inválido.");
+            resp.sendRedirect("receitaa?acao=listar");
+            return;
+        }
+
+        try (ReceitaDao receitaDao = new ReceitaDao()) {
+            Receita receita = receitaDao.pesquisarReceitaPorIdDoCliente(cliente.getIdCliente(), idReceita);
             req.setAttribute("receita", receita);
             req.getRequestDispatcher("editar-receita.jsp").forward(req, resp);
+
+        } catch (EntidadeNaoEncontradaException e) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", e.getMessage());
+            resp.sendRedirect("receitaa?acao=listar");
+
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao abrir formulário");
             req.getRequestDispatcher("home.jsp").forward(req, resp);
-        } finally{
-            fecharDao(dao);
-        }
-    }
-
-    private void fecharDao(ReceitaDao dao) {
-        try {
-            if (dao != null) {
-                dao.fecharConexao();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -64,41 +84,45 @@ public class ReceitaServlet extends HttpServlet {
 
         if ("cadastrar".equals(acao)) {
             cadastrarReceita(req, resp);
-        } else if ("atualizar".equals(acao)){
+        } else if ("atualizar".equals(acao)) {
             atualizarReceita(req, resp);
-        } else if ("excluir".equals(acao)){
+        } else if ("excluir".equals(acao)) {
             excluirReceita(req, resp);
         }
     }
 
     private void listarReceitas(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ReceitaDao dao = null;
+        Cadastro cliente = getClienteLogado(req, resp);
+        if (cliente == null) return;
 
-        try {
-            dao = new ReceitaDao();
-            HttpSession session = req.getSession();
-            Cadastro cliente = (Cadastro) session.getAttribute("cliente");
-
-            List<Receita> lista = dao.pesquisarReceitasPorCliente(cliente.getIdCliente());
+        try (ReceitaDao receitaDao = new ReceitaDao()) {
+            List<Receita> lista = receitaDao.pesquisarReceitasPorCliente(cliente.getIdCliente());
             req.setAttribute("receitas", lista);
 
         } catch (SQLException e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao listar receitas");
-        } finally{
-            fecharDao(dao);
         }
         req.getRequestDispatcher("lista-receita.jsp").forward(req, resp);
     }
 
     private void atualizarReceita(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ReceitaDao dao = null;
+        Cadastro cliente = getClienteLogado(req, resp);
+        if (cliente == null) return;
 
+        int idReceita;
         try {
-            dao = new ReceitaDao();
-            int id = Integer.parseInt(req.getParameter("id"));
+            idReceita = Integer.parseInt(req.getParameter("id"));
+        } catch (NumberFormatException e) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "ID de receita inválido.");
+            resp.sendRedirect("receitaa?acao=listar");
+            return;
+        }
+
+        try (ReceitaDao receitaDao = new ReceitaDao()) {
             String categoria = req.getParameter("categoria");
             String descricao = req.getParameter("descricao");
             String status = req.getParameter("status");
@@ -108,46 +132,48 @@ public class ReceitaServlet extends HttpServlet {
 
             if (valor <= 0) {
                 req.setAttribute("erro", "O valor da receita deve ser maior que zero.");
-                abrirFormEdicao(req, resp);
+                Receita atual = receitaDao.pesquisarReceitaPorIdDoCliente(cliente.getIdCliente(), idReceita);
+                req.setAttribute("receita", atual);
+                req.getRequestDispatcher("editar-receita.jsp").forward(req, resp);
                 return;
             }
 
             Receita receita = new Receita();
-            receita.setId(id);
+            receita.setId(idReceita);
             receita.setCategoria(categoria);
             receita.setDescricao(descricao);
             receita.setStatus(status);
             receita.setDataRecebimento(recebimento);
             receita.setValor(valor);
 
-            dao.atualizarReceita(receita);
+            receitaDao.atualizarReceitaDoCliente(receita, cliente.getIdCliente());
+
             req.setAttribute("receita", receita);
             req.setAttribute("mensagem", "Receita atualizada com sucesso!");
+
+        } catch (EntidadeNaoEncontradaException e) {
+            req.setAttribute("erro", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao atualizar receita.");
-        } finally{
-            fecharDao(dao);
         }
 
         req.getRequestDispatcher("editar-receita.jsp").forward(req, resp);
     }
 
     private void cadastrarReceita(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        HttpSession session = req.getSession();
 
-        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
+        Cadastro cliente = getClienteLogado(req, resp);
+        if (cliente == null) return;
+        HttpSession session = req.getSession(false);
         ContaBancaria conta = (ContaBancaria) session.getAttribute("conta");
 
-        if (cliente == null || conta == null) {
+        if (conta == null) {
             resp.sendRedirect("erro-conta-obrigatoria.jsp?origem=receita");
             return;
         }
 
-        ReceitaDao dao = null;
-
-        try {
-            dao = new ReceitaDao();
+        try (ReceitaDao receitaDao = new ReceitaDao()) {
             double valor = Double.parseDouble(req.getParameter("valor"));
             String categoria = req.getParameter("categoria");
             LocalDate recebimento = LocalDate.parse(req.getParameter("dataRecebimento"));
@@ -160,6 +186,8 @@ public class ReceitaServlet extends HttpServlet {
                 return;
             }
 
+            conta.setCliente(cliente);
+
             Receita receita = new Receita();
             receita.setContaBancaria(conta);
             receita.setValor(valor);
@@ -168,52 +196,54 @@ public class ReceitaServlet extends HttpServlet {
             receita.setDescricao(descricao);
             receita.setStatus(status);
 
-            dao.cadastrarReceita(receita);
+            receitaDao.cadastrarReceita(receita);
             req.setAttribute("mensagem", "Receita cadastrada com sucesso!");
 
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao cadastrar receita");
-        } finally{
-            fecharDao(dao);
         }
         req.getRequestDispatcher("cadastro-receita.jsp").forward(req, resp);
-
     }
 
     private void excluirReceita(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
 
-        ReceitaDao dao = null;
+        Cadastro cliente = getClienteLogado(req, resp);
+        if (cliente == null) return;
 
+        int idReceita;
         try {
-            dao = new ReceitaDao();
-            int idReceita = Integer.parseInt(req.getParameter("codigoExcluir"));
-            Receita receita = dao.pesquisarReceitaPorId(idReceita);
+            idReceita = Integer.parseInt(req.getParameter("idReceita"));
+        } catch (NumberFormatException e) {
+            req.setAttribute("erro", "ID de receita inválido.");
+            listarReceitas(req, resp);
+            return;
+        }
 
-             if (receita != null) {
-                 if ("Recebido".equalsIgnoreCase(receita.getStatus())){
-                     req.setAttribute("erro", "Receitas com status 'Recebido' não podem ser excluídas.");
-                 } else {
-                     dao.deletarReceita(idReceita);
-                     req.setAttribute("mensagem", "Receita excluída com sucesso!");
-                 }
-             }
+        try (ReceitaDao receitaDao = new ReceitaDao()) {
 
-            List<Receita> receitas = dao.pesquisarReceitasPorCliente(cliente.getIdCliente());
+            Receita receita = receitaDao.pesquisarReceitaPorIdDoCliente(cliente.getIdCliente(), idReceita);
+
+            if ("Recebido".equalsIgnoreCase(receita.getStatus())) {
+                req.setAttribute("erro", "Receitas com status 'Recebido' não podem ser excluídas.");
+            } else {
+                receitaDao.deletarReceitaDoCliente(cliente.getIdCliente(), idReceita);
+                req.setAttribute("mensagem", "Receita excluída com sucesso!");
+            }
+
+            List<Receita> receitas = receitaDao.pesquisarReceitasPorCliente(cliente.getIdCliente());
             req.setAttribute("receitas", receitas);
+
         } catch (EntidadeNaoEncontradaException e) {
-            req.setAttribute("erro", "Receita não localizada. Tente novamente.");
+            req.setAttribute("erro", "Receita não localizada ou acesso negado.");
+            listarReceitas(req, resp);
+            return;
+
         } catch (SQLException e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao excluir receita");
-        } finally{
-            fecharDao(dao);
         }
-
         req.getRequestDispatcher("lista-receita.jsp").forward(req, resp);
     }
-
 }
 
