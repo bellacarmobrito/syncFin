@@ -58,7 +58,7 @@ public class ReceitaServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             HttpSession session = req.getSession(false);
             if (session != null) session.setAttribute("erro", "ID de receita inválido.");
-            resp.sendRedirect("receitaa?acao=listar");
+            resp.sendRedirect("receita?acao=listar");
             return;
         }
 
@@ -70,7 +70,7 @@ public class ReceitaServlet extends HttpServlet {
         } catch (EntidadeNaoEncontradaException e) {
             HttpSession session = req.getSession(false);
             if (session != null) session.setAttribute("erro", e.getMessage());
-            resp.sendRedirect("receitaa?acao=listar");
+            resp.sendRedirect("receita?acao=listar");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,7 +213,7 @@ public class ReceitaServlet extends HttpServlet {
 
         int idReceita;
         try {
-            idReceita = Integer.parseInt(req.getParameter("idReceita"));
+            idReceita = Integer.parseInt(req.getParameter("codigoExcluir"));
         } catch (NumberFormatException e) {
             req.setAttribute("erro", "ID de receita inválido.");
             listarReceitas(req, resp);
