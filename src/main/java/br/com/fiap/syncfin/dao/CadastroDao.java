@@ -103,6 +103,20 @@ public class CadastroDao extends BaseDao {
         }
     }
 
+    public void atualizarSemSenha(Cadastro cadastro) throws SQLException {
+
+        String sql = "UPDATE T_CLIENTE SET NM_CLIENTE = ?, NR_CELULAR = ?, NR_CPF = ?, EMAIL = ? WHERE ID_CLIENTE = ?";
+
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setString(1, cadastro.getNomeCliente());
+            stm.setString(2, cadastro.getCelular());
+            stm.setString(3, cadastro.getCpf());
+            stm.setString(4, cadastro.getEmail());
+            stm.setInt(5, cadastro.getIdCliente());
+            stm.executeUpdate();
+        }
+    }
+
     public void inativarCadastro(int id) throws SQLException, EntidadeNaoEncontradaException {
 
         String sql = "UPDATE T_CLIENTE SET ST_CONTA = 'Inativa' WHERE ID_CLIENTE = ?";

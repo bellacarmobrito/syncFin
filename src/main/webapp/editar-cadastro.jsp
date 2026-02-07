@@ -59,8 +59,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="id-cpf"><strong>Senha</strong></label><br>
-                        <input type="password" name="senha" id="id-senha" class="form-control"
-                               value="${cadastro.senha}">
+                        <input type="password" name="senha" id="id-senha" class="form-control">
                     </div>
 
                     <div class="d-flex justify-content-center mt-4 gap-2">

@@ -68,13 +68,12 @@ public class CadastroServelet extends HttpServlet {
         try (CadastroDao dao = new CadastroDao()) {
 
             int idCliente = Integer.parseInt(req.getParameter("codigo"));
+
             String nomeCliente = req.getParameter("nomeCliente");
             String telefone = req.getParameter("telefone");
             String cpf = req.getParameter("cpf");
             String email = req.getParameter("email");
             String senha = req.getParameter("senha");
-
-            senha = CriptografiaUtils.criptografar(senha);
 
             Cadastro cadastro = new Cadastro();
             cadastro.setIdCliente(idCliente);
@@ -82,9 +81,13 @@ public class CadastroServelet extends HttpServlet {
             cadastro.setCelular(telefone);
             cadastro.setCpf(cpf);
             cadastro.setEmail(email);
-            cadastro.setSenha(senha);
 
-            dao.atualizar(cadastro);
+            if (senha != null && !senha.isBlank()) {
+                cadastro.setSenha(CriptografiaUtils.criptografar(senha));
+                dao.atualizar(cadastro);
+            } else {
+                dao.atualizarSemSenha(cadastro);
+            }
 
             HttpSession session = req.getSession();
             session.setAttribute("cliente", cadastro);

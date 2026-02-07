@@ -118,7 +118,7 @@ public class ReceitaServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             HttpSession session = req.getSession(false);
             if (session != null) session.setAttribute("erro", "ID de receita inválido.");
-            resp.sendRedirect("receitaa?acao=listar");
+            resp.sendRedirect("receita?acao=listar");
             return;
         }
 
