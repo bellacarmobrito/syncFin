@@ -1,9 +1,5 @@
 package br.com.fiap.syncfin.model;
 
-import br.com.fiap.syncfin.util.CriptografiaUtils;
-
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
 
@@ -18,7 +14,7 @@ public class Cadastro {
     private LocalDateTime dataCadastro;
     private String statusConta = "Ativa";
 
-    public Cadastro(String nome, String celular, String cpf, String email, String senha, String status){
+    public Cadastro(String nome, String celular, String cpf, String email, String senha, String status) {
         this.nomeCliente = nome;
         this.celular = celular;
         this.cpf = cpf;
@@ -28,7 +24,7 @@ public class Cadastro {
 
     }
 
-    public Cadastro(String nome, Endereco endereco, String celular, String cpf, String email, String senha, String status){
+    public Cadastro(String nome, Endereco endereco, String celular, String cpf, String email, String senha, String status) {
         this.nomeCliente = nome;
         this.endereco = endereco;
         this.celular = celular;
@@ -38,7 +34,7 @@ public class Cadastro {
         this.statusConta = (status != null && !status.isBlank()) ? status : "Ativa";
     }
 
-    public Cadastro(int idCliente, String nomeCliente, String celular, String cpf, String email, String senha, LocalDateTime dataCadastro, String status){
+    public Cadastro(int idCliente, String nomeCliente, String celular, String cpf, String email, String senha, LocalDateTime dataCadastro, String status) {
         this.idCliente = idCliente;
         this.nomeCliente = nomeCliente;
         this.celular = celular;
@@ -50,7 +46,7 @@ public class Cadastro {
     }
 
 
-    public Cadastro(int idCliente, String nomeCliente, Endereco endereco, String celular, String cpf, String email, String senha){
+    public Cadastro(int idCliente, String nomeCliente, Endereco endereco, String celular, String cpf, String email, String senha) {
         this.idCliente = idCliente;
         this.nomeCliente = nomeCliente;
         this.endereco = endereco;
@@ -61,7 +57,8 @@ public class Cadastro {
         this.statusConta = "Ativa";
     }
 
-    public Cadastro(){}
+    public Cadastro() {
+    }
 
     @Override
     public String toString() {
@@ -77,7 +74,7 @@ public class Cadastro {
     }
 
 
-    public void exibirCadastro(){
+    public void exibirCadastro() {
         System.out.println("Detalhamento do Cadastro");
         System.out.println("-------------------------------------------");
         System.out.println("ID: " + getIdCliente());
@@ -86,13 +83,12 @@ public class Cadastro {
         System.out.println("Celular: " + getCelular());
         System.out.println("CPF: " + getCpf());
         System.out.println("E-mail: " + getEmail());
-        System.out.println("Senha: " + getSenha());
         System.out.println("Data de Cadastro: " + getDataCadastro());
         System.out.println("Status da Conta: " + isStatusConta());
     }
 
-    public void atualizarNome(String novoNome){
-        if (novoNome != null && !novoNome.isEmpty()){
+    public void atualizarNome(String novoNome) {
+        if (novoNome != null && !novoNome.isEmpty()) {
             this.nomeCliente = novoNome;
             System.out.println("Nome atualizado com sucesso!");
         } else {
@@ -101,7 +97,7 @@ public class Cadastro {
 
     }
 
-    public void atualizarEndereco(Endereco novoEndereco){
+    public void atualizarEndereco(Endereco novoEndereco) {
         if (novoEndereco != null) {
             this.endereco = novoEndereco;
             System.out.println("Endereço atualizado com sucesso!");
@@ -110,8 +106,8 @@ public class Cadastro {
         }
     }
 
-    public void atualizarCpf(String novoCpf){
-        if (novoCpf != null && !novoCpf.isEmpty()){
+    public void atualizarCpf(String novoCpf) {
+        if (novoCpf != null && !novoCpf.isEmpty()) {
             this.cpf = novoCpf;
             System.out.println("CPF atualizado com sucesso!");
         } else {
@@ -119,8 +115,8 @@ public class Cadastro {
         }
     }
 
-    public void atualizarCelular(String novoCelular){
-        if (novoCelular != null && !novoCelular.isEmpty()){
+    public void atualizarCelular(String novoCelular) {
+        if (novoCelular != null && !novoCelular.isEmpty()) {
             this.celular = novoCelular;
             System.out.println("Celular atualizado com sucesso!");
         } else {
@@ -128,7 +124,7 @@ public class Cadastro {
         }
     }
 
-    public void atualizarEmail(String novoEmail){
+    public void atualizarEmail(String novoEmail) {
         if (novoEmail != null && !novoEmail.isEmpty()) {
             this.email = novoEmail;
             System.out.println("E-mail atualizado com sucesso!");
@@ -137,7 +133,7 @@ public class Cadastro {
         }
     }
 
-    public void atualizarSenha(String novaSenha){
+    public void atualizarSenha(String novaSenha) {
         if (novaSenha != null && !novaSenha.isEmpty()) {
             this.senha = novaSenha;
             System.out.println("Senha alterada com sucesso!");
@@ -146,7 +142,7 @@ public class Cadastro {
         }
     }
 
-    public void excluirCadastro(){
+    public void excluirCadastro() {
         this.nomeCliente = null;
         this.endereco = null;
         this.celular = null;
@@ -210,12 +206,7 @@ public class Cadastro {
     }
 
     public void setSenha(String senha) {
-
-        try {
-            this.senha = CriptografiaUtils.criptografar(senha);
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        this.senha = senha;
     }
 
     public LocalDateTime getDataCadastro() {

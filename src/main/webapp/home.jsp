@@ -17,7 +17,7 @@
 <%@include file="header.jsp" %>
 
 <h2 class="mt-5 mb-4 text-center">
-    Olá, ${cliente.nomeCliente}, Bem-vindo (a) de volta ao <span class="fw-bolder">SyncFin</span>!
+    Olá ${cliente.nomeCliente}, Bem-vindo (a) ao <span class="fw-bolder">SyncFin</span>!
 </h2>
 
 <div class="container mb-5">

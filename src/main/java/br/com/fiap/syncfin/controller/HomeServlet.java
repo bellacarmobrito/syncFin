@@ -19,8 +19,9 @@ import java.util.List;
 public class HomeServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
+
+        HttpSession session = req.getSession(false);
+        Cadastro cliente = (session == null) ? null : (Cadastro) session.getAttribute("cliente");
 
         if (cliente == null) {
             resp.sendRedirect("index.jsp");
@@ -29,18 +30,12 @@ public class HomeServlet extends HttpServlet {
 
         int idCliente = cliente.getIdCliente();
 
-        ContaBancariaDao contaDao = null;
-        ReceitaDao receitaDao = null;
-        DespesaDao despesaDao = null;
-        InvestimentoDao investimentoDao = null;
-
-
-        try {
-            contaDao = new ContaBancariaDao();
-            receitaDao = new ReceitaDao();
-            despesaDao = new DespesaDao();
-            investimentoDao = new InvestimentoDao();
-
+        try (
+                ContaBancariaDao contaDao = new ContaBancariaDao();
+                ReceitaDao receitaDao = new ReceitaDao();
+                DespesaDao despesaDao = new DespesaDao();
+                InvestimentoDao investimentoDao = new InvestimentoDao()
+        ) {
             double saldoTotal = contaDao.calcularSaldoPorCliente(idCliente);
             double totalReceitas = receitaDao.calcularReceitasPorCliente(idCliente);
             double totalDespesas = despesaDao.calcularDespesasPorCliente(idCliente);
@@ -61,26 +56,10 @@ public class HomeServlet extends HttpServlet {
             req.setAttribute("totalDespesas", totalDespesas);
             req.setAttribute("totalInvestimentos", totalInvestimentos);
 
-
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao carregar informações.");
-        } finally {
-            fecharDao(contaDao, receitaDao, despesaDao, investimentoDao);
         }
-
         req.getRequestDispatcher("home.jsp").forward(req, resp);
-
-    }
-
-    private static void fecharDao(ContaBancariaDao contaDao, ReceitaDao receitaDao, DespesaDao despesaDao, InvestimentoDao investimentoDao) {
-        try {
-            if (contaDao != null) contaDao.fecharConexao();
-            if (receitaDao != null) receitaDao.fecharConexao();
-            if (despesaDao != null) despesaDao.fecharConexao();
-            if (investimentoDao != null) investimentoDao.fecharConexao();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
