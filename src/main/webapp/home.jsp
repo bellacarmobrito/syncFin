@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap"
           rel="stylesheet">
     <link rel="stylesheet" href="./resources/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="./resources/css/global.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -27,13 +28,16 @@
                 <div class="card-header d-flex justify-content-between align-items-center"
                      style="background-color: #1F2A44">
                     <p class="text-white m-0"><strong>Saldo Disponível</strong></p>
-                    <button class="btn btn-sm btn-outline-secondary text-white" onclick="toggleSaldo()">
-                        Mostrar/Esconder
+                    <button type="button" class="btn custom border-0" onclick="toggleSaldo(event)"
+                            aria-label="Mostrar saldo" title="Mostrar saldo">
+                        <i id="saldoIcon" class="bi bi-eye-slash bold text-white"></i>
                     </button>
                 </div>
                 <div class="card-body">
-                    <strong id="saldoValor" class="card-title f-6" style="color: #1F2A44">
-                        R$ <fmt:formatNumber value="${saldoTotal}" type="number" minFractionDigits="2"/>
+                    <strong id="saldoValor"
+                            data-real="R$ <fmt:formatNumber value='${saldoTotal}' type='number' minFractionDigits='2'/>"
+                            style="color: #1F2A44">
+                        ••••••
                     </strong>
                 </div>
             </div>
@@ -88,14 +92,34 @@
 </div>
 <%@include file="footer.jsp" %>
 <script>
-    function toggleSaldo() {
+    function aplicarEstadoSaldo(saldoOculto) {
         const saldo = document.getElementById("saldoValor");
-        if (saldo.style.display === "none") {
-            saldo.style.display = "block";
-        } else {
-            saldo.style.display = "none";
-        }
+        const icon = document.getElementById("saldoIcon");
+        const btn = icon.closest("button");
+
+        saldo.textContent = saldoOculto ? "••••••" : saldo.dataset.real;
+        icon.classList.toggle("bi-eye-slash", saldoOculto);
+        icon.classList.toggle("bi-eye", !saldoOculto);
+
+        const label = saldoOculto ? "Mostrar saldo" : "Ocultar saldo";
+        btn.title = label;
+        btn.setAttribute("aria-label", label);
+
+        localStorage.setItem("saldoOculto", saldoOculto ? "1" : "0");
     }
+
+    function toggleSaldo(e) {
+        if (e) e.preventDefault();
+        const atual = localStorage.getItem("saldoOculto") === "1";
+        aplicarEstadoSaldo(!atual);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const salvo = localStorage.getItem("saldoOculto");
+        const saldoOculto = (salvo === null) ? true : (salvo === "1");
+        aplicarEstadoSaldo(saldoOculto);
+    });
+
 </script>
 <script src="resources/js/bootstrap.bundle.js"></script>
 </body>

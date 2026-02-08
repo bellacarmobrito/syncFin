@@ -41,15 +41,11 @@ input, label, textarea, input::placeholder {
     min-width: 120px;
 }
 
-
 .btn-primary {
     background-color: #1F2A44;
     border: none;
     font-size: 14px;
     font-weight: bold;
-}
-.btn-primary:hover {
-    background-color: #1F2A44;
 }
 
 .btn-secondary {
@@ -63,4 +59,14 @@ input, label, textarea, input::placeholder {
 
 .custom-arrow::after {
     filter: brightness(0) invert(1);
+}
+
+.custom {
+    --bs-btn-bg:#1F2A44 !important;
+    --bs-btn-border-color:#1F2A44 !important;
+    --bs-btn-hover-bg:#1F2A44 !important;
+    --bs-btn-hover-border-color:none !important;
+    --bs-btn-active-bg:#1F2A44 !important;
+    --bs-btn-active-border-color: none !important;
+    --bs-btn-focus-shadow-rgb:0,0,0 !important;
 }

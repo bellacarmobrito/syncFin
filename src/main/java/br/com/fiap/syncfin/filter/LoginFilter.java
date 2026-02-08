@@ -11,7 +11,6 @@ import java.io.IOException;
 @WebFilter("/*")
 public class LoginFilter implements Filter {
 
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
@@ -21,24 +20,25 @@ public class LoginFilter implements Filter {
         HttpSession session = req.getSession(false);
 
         String url = req.getRequestURI();
+        String ctx = req.getContextPath();
         String acao = req.getParameter("acao");
 
         boolean usuarioLogado = (session != null && session.getAttribute("cliente") != null);
 
+        boolean isRoot = url.equals(ctx) || url.equals(ctx + "/");
+
         boolean urlLiberada =
-                url.endsWith("login") ||
-                        url.contains("index.jsp") ||
-                        url.contains("cadastro-cliente.jsp") ||
-                        (url.contains("cadastro") && "cadastrar".equals(acao)) ||
-                        url.contains("resources");
+                isRoot ||
+                        url.equals(ctx + "/index.jsp") ||
+                        url.equals(ctx + "/login") ||
+                        url.equals(ctx + "/cadastro-cliente.jsp") ||
+                        (url.equals(ctx + "/cadastro") && "cadastrar".equals(acao)) ||
+                        url.startsWith(ctx + "/resources/");
 
         if (!usuarioLogado && !urlLiberada) {
-            req.setAttribute("erro", "Entre com o usuário e senha!");
-            req.getRequestDispatcher("index.jsp").forward(req, resp);
+            resp.sendRedirect(ctx + "/index.jsp");
             return;
         }
-
         filterChain.doFilter(req, resp);
-
     }
 }
