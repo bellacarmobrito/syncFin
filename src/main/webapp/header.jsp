@@ -19,20 +19,6 @@
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
                             style="font-size: 14px">
-                        Meu Cadastro
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-dark">
-                        <li><a class="dropdown-item" href="visualizar-cadastro.jsp" style="font-size: 14px">Visualizar
-                            Cadastro</a></li>
-                        <li><a class="dropdown-item" href="cadastro?acao=abrir-form-edicao&codigo=${cliente.idCliente}"
-                               style="font-size: 14px">Editar
-                            Cadastro</a></li>
-                    </ul>
-                </div>
-
-                <div class="dropdown">
-                    <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                            style="font-size: 14px">
                         Conta Bancária
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark">
@@ -86,42 +72,46 @@
             </ul>
 
 
-            <c:if test="${empty user}">
+            <c:if test="${empty cliente}">
                 <span class="navbar-text text-danger" style="margin-right: 10px; font-size: 14px">
                         ${erro}
                 </span>
-
-
-                <form class="form-inline my-lg-0" action="login" method="post">
-                    <div class="row">
-                        <div class="col">
-                            <input
-                                    class="form-control mr-sm-2"
-                                    type="text"
-                                    name="email"
-                                    placeholder="E-mail">
-                        </div>
-                        <div class="col">
-                            <input
-                                    class="form-control mr-sm-2"
-                                    type="password"
-                                    name="senha"
-                                    placeholder="Senha">
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-outline-light my-2 my-sm-0"
-                                    type="submit">Entrar
-                            </button>
-                        </div>
-                    </div>
-                </form>
             </c:if>
-            <c:if test="${not empty user}">
-                <span class="navbar-text" style="font-size: 14px; color: white">
-                    ${user}
-                    <a href="login" class="btn btn-light my-2 my-sm-0"
-                       style="font-size: 14px; color: #1F2A44; margin-left: 10px">Sair</a>
-                </span>
+
+            <c:if test="${not empty cliente}">
+                <div class="dropdown ms-auto">
+                    <button class="btn btn-dark dropdown-toggle d-flex align-items-center gap-2"
+                            data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 14px">
+                        <i class="bi bi-person-circle text-white fs-4"></i>
+                        <span class="text-white">
+                                ${cliente.nomeCliente}
+                        </span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="visualizar-cadastro.jsp" style="font-size: 14px">
+                                <i class="bi bi-person me-2"></i> Visualizar cadastro
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="cadastro?acao=abrir-form-edicao&codigo=${cliente.idCliente}"
+                               style="font-size: 14px">
+                                <i class="bi bi-pencil me-2"></i> Editar cadastro
+                            </a>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="login" style="font-size: 14px">
+                                <i class="bi bi-box-arrow-right me-2"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </c:if>
 
 
