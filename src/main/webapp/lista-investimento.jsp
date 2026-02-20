@@ -16,9 +16,14 @@
 </head>
 <body>
 <%@include file="header.jsp" %>
+
+<jsp:include page="back-button.jsp">
+    <jsp:param name="fallback" value="receita?acao=listar"/>
+    <jsp:param name="label" value="Voltar"/>
+</jsp:include>
+
 <div class="container">
     <div class="mt-5 ms-5 me-5">
-
         <div class="card mb-3 shadow-sm">
             <div class="card-header text-black bg-white border-0">
                 <h5 class="card-header bg-white border-0 fw-bold" style="color: #1F2A44">Lista de Investimentos</h5>

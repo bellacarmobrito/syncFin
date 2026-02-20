@@ -16,6 +16,12 @@
 </head>
 <body>
 <%@include file="header.jsp" %>
+
+<jsp:include page="back-button.jsp">
+    <jsp:param name="fallback" value="receita?acao=listar"/>
+    <jsp:param name="label" value="Voltar"/>
+</jsp:include>
+
 <div class="container">
     <div class="mt-5 ms-5 me-5">
 
