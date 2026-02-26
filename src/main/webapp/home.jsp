@@ -17,20 +17,20 @@
 <body class="d-flex flex-column min-vh-100">
 <%@include file="header.jsp" %>
 
-<h2 class="mt-5 mb-4 text-center">
-    Olá ${cliente.nomeCliente}, Bem-vindo (a) ao <span class="fw-bolder">SyncFin</span>!
-</h2>
+<h3 class="mt-5 mb-4 text-center" style="color: #1F2A44">
+    Olá ${cliente.nomeCliente}!
+</h3>
 
 <div class="container mb-5">
-    <div class="row">
+    <div class="row g-3">
         <div class="col-md-6 d-flex flex-column gap-3">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0">
                 <div class="card-header d-flex justify-content-between align-items-center"
                      style="background-color: #1F2A44">
-                    <p class="text-white m-0"><strong>Saldo Disponível</strong></p>
-                    <button type="button" class="btn custom border-0" onclick="toggleSaldo(event)"
+                    <strong class="text-white m-0">Saldo Disponível</strong>
+                    <button type="button" class="btn custom border-0 p-0 m-0 d-flex justify-content-end align-items-center" onclick="toggleSaldo(event)"
                             aria-label="Mostrar saldo" title="Mostrar saldo">
-                        <i id="saldoIcon" class="bi bi-eye-slash bold text-white"></i>
+                        <i id="saldoIcon" class="bi bi-eye-slash text-white"></i>
                     </button>
                 </div>
                 <div class="card-body">
@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0">
                 <div class="card-header" style="background-color: #1F2A44"><strong class="text-white">Contas
                     Bancárias</strong></div>
                 <div class="card-body">
@@ -74,7 +74,7 @@
         </div>
 
         <div class="col-md-6">
-            <div class="card shadow-sm h-100">
+            <div class="card shadow-sm h-100 border-0">
                 <div class="card-header text-white" style="background-color: #1F2A44"><strong>Resumo Financeiro</strong>
                 </div>
                 <div class="card-body">
