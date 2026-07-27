@@ -21,7 +21,7 @@
             <h1 class="mb-3">Controle suas <span class="badge text-white fw-bold" style="background-color: #1F2A44">finanças</span> sem planilha.</h1><br>
             <p>Organizar as suas finanças nunca foi tão fácil. Com a <strong class="fw-bold">SyncFin</strong>, você tem tudo num único
                 lugar.</p> <br>
-            <a class="btn btn-primary" href="cadastro-cliente.jsp">Cadastre-se</a>
+            <a class="btn custom text-white fw-bold" href="cadastro-cliente.jsp">Cadastre-se</a>
         </div>
 
         <div class="col-md-6">
@@ -46,7 +46,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center mt-4 gap-2">
-                            <button type="submit" class="btn btn-primary w-auto">Entrar</button>
+                            <button type="submit" class="btn custom text-white fw-bold w-auto">Entrar</button>
                         </div>
                     </form>
                 </div>

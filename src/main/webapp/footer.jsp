@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-6 text-center text-sm-start">
                 <span class="text-light"
-                      style="font-size: 14px">&copy; 2025 SyncFin. Todos os direitos reservados.</span>
+                      style="font-size: 14px">&copy; 2026 SyncFin. Todos os direitos reservados.</span>
             </div>
             <div class="col-md-6 text-center text-sm-end">
                 <ul class="list-inline mb-0">

@@ -16,7 +16,7 @@
                 <c:choose>
                     <c:when test="${empty receitas}">
                         <div class="alert alert-info mb-3">Nenhuma receita cadastrada.</div>
-                        <a href="cadastro-receita.jsp" class="btn btn-sm btn-primary">Cadastrar Receita</a>
+                        <a href="cadastro-receita.jsp" class="btn btn-sm custom text-white">Cadastrar Receita</a>
                     </c:when>
 
                     <c:otherwise>
@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="mt-3 text-center">
-                            <a href="receita?acao=listar" class="btn btn-primary btn-sm">Ver todas</a>
+                            <a href="receita?acao=listar" class="btn custom text-white btn-sm">Ver todas</a>
                         </div>
                     </c:otherwise>
                 </c:choose>
@@ -65,7 +65,7 @@
                 <c:choose>
                     <c:when test="${empty despesas}">
                         <div class="alert alert-info mb-3">Nenhuma despesa cadastrada.</div>
-                        <a href="cadastro-despesa.jsp" class="btn btn-sm btn-primary">Cadastrar Despesa</a>
+                        <a href="cadastro-despesa.jsp" class="btn btn-sm custom text-white">Cadastrar Despesa</a>
                     </c:when>
 
                     <c:otherwise>
@@ -94,7 +94,7 @@
                         </div>
 
                         <div class="mt-3 text-center">
-                            <a href="despesa?acao=listar" class="btn btn-primary btn-sm">Ver todas</a>
+                            <a href="despesa?acao=listar" class="btn custom text-white btn-sm">Ver todas</a>
                         </div>
                     </c:otherwise>
                 </c:choose>
@@ -114,7 +114,7 @@
                 <c:choose>
                     <c:when test="${empty investimentos}">
                         <div class="alert alert-info mb-3">Nenhum investimento cadastrado.</div>
-                        <a href="cadastro-investimento.jsp" class="btn btn-sm btn-primary">Cadastrar Investimento</a>
+                        <a href="cadastro-investimento.jsp" class="btn btn-sm custom text-white">Cadastrar Investimento</a>
                     </c:when>
 
                     <c:otherwise>
@@ -145,7 +145,7 @@
                         </div>
 
                         <div class="mt-3 text-center">
-                            <a href="investimento?acao=listar" class="btn btn-primary btn-sm">Ver todos</a>
+                            <a href="investimento?acao=listar" class="btn custom text-white btn-sm">Ver todos</a>
                         </div>
                     </c:otherwise>
                 </c:choose>
