@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -26,11 +25,7 @@ public class CadastroServelet extends HttpServlet {
 
         switch (acao) {
             case "cadastrar":
-                try {
-                    cadastrar(req, resp);
-                } catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException(e);
-                }
+                cadastrar(req, resp);
                 break;
             case "editar":
                 editar(req, resp);
@@ -41,7 +36,7 @@ public class CadastroServelet extends HttpServlet {
         }
     }
 
-    private void cadastrar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, NoSuchAlgorithmException {
+    private void cadastrar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String nomeCliente = req.getParameter("nomeCliente");
         String telefone = req.getParameter("telefone");
         String cpf = req.getParameter("cpf");
@@ -99,8 +94,6 @@ public class CadastroServelet extends HttpServlet {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao atualizar");
             req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
         }
     }
 

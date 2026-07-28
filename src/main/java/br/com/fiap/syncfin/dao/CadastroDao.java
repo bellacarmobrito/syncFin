@@ -141,16 +141,8 @@ public class CadastroDao extends BaseDao {
                 if (!rs.next()) return null;
 
                 Cadastro cliente = parseCliente(rs);
-                String senhaHash;
 
-                try {
-                    senhaHash = CriptografiaUtils.criptografar(senhaDigitada);
-
-                } catch (Exception e) {
-                    throw new SQLException("Falha ao criptografar senha digitada.", e);
-                }
-
-                return senhaHash.equals(cliente.getSenha()) ? cliente : null;
+                return CriptografiaUtils.verificar(senhaDigitada, cliente.getSenha()) ? cliente : null;
             }
         }
     }

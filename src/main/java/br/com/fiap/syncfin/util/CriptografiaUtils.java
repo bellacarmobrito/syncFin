@@ -1,21 +1,14 @@
 package br.com.fiap.syncfin.util;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class CriptografiaUtils {
 
-    public static String criptografar(String senha) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public static String criptografar(String senha) {
+        return BCrypt.hashpw(senha, BCrypt.gensalt());
+    }
 
-        MessageDigest md = MessageDigest.getInstance("MD5");
-
-        md.update(senha.getBytes("ISO-8859-1"));
-
-        BigInteger hash = new BigInteger(1, md.digest());
-
-        return hash.toString(16);
-
+    public static boolean verificar(String senhaDigitada, String hashArmazenado) {
+        return BCrypt.checkpw(senhaDigitada, hashArmazenado);
     }
 }
