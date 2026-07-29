@@ -32,29 +32,22 @@ public class ContaBancariaDao extends BaseDao {
 
     public int cadastrarConta(ContaBancaria conta) throws SQLException {
 
-        int idGerado;
+        String sql = "INSERT INTO T_CONTA_BANCARIA (ID_CLIENTE, NM_INSTITUICAO, AGENCIA, NR_CONTA, TIPO_CONTA, SALDO_ATUAL) " +
+                "VALUES (?,?,?,?,?,?) RETURNING ID_CONTA";
 
-        try (Statement stmtSeq = conexao.createStatement();
-             ResultSet rs = stmtSeq.executeQuery("SELECT SEQ_T_CONTA_BANCARIA.NEXTVAL FROM DUAL")) {
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, conta.getCliente().getIdCliente());
+            stm.setString(2, conta.getNomeInstituicao());
+            stm.setString(3, conta.getAgencia());
+            stm.setString(4, conta.getNumeroConta());
+            stm.setString(5, conta.getTipoConta());
+            stm.setDouble(6, conta.getSaldo());
 
-            if (!rs.next()) {
-                throw new SQLException("Não foi possível gerar ID da conta bancária");
-            }
-            idGerado = rs.getInt(1);
-
-            String sql = "INSERT INTO T_CONTA_BANCARIA (ID_CONTA, ID_CLIENTE, NM_INSTITUICAO, AGENCIA, NR_CONTA, TIPO_CONTA, SALDO_ATUAL) VALUES (?,?,?,?,?,?,?)";
-
-            try (PreparedStatement stm = conexao.prepareStatement(sql)) {
-                stm.setInt(1, idGerado);
-                stm.setInt(2, conta.getCliente().getIdCliente());
-                stm.setString(3, conta.getNomeInstituicao());
-                stm.setString(4, conta.getAgencia());
-                stm.setString(5, conta.getNumeroConta());
-                stm.setString(6, conta.getTipoConta());
-                stm.setDouble(7, conta.getSaldo());
-                stm.executeUpdate();
-
-                return idGerado;
+            try (ResultSet rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Não foi possível gerar ID da conta bancária");
+                }
+                return rs.getInt(1);
             }
         }
     }

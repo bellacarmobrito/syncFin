@@ -12,7 +12,7 @@
   <img alt="Java" src="https://img.shields.io/badge/Java-17-orange">
   <img alt="Jakarta EE" src="https://img.shields.io/badge/Jakarta%20EE-Servlet%2FJSP-blue">
   <img alt="Maven" src="https://img.shields.io/badge/build-Maven-C71A36">
-  <img alt="Oracle DB" src="https://img.shields.io/badge/database-Oracle-red">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/database-PostgreSQL-336791">
 </p>
 
 ---
@@ -39,7 +39,7 @@ A proposta é permitir que o usuário centralize sua vida financeira: cadastre-s
 O projeto segue uma arquitetura em camadas, próxima de um MVC clássico com Servlets:
 
 ```
-Servlet (controller)  →  DAO  →  Oracle Database
+Servlet (controller)  →  DAO  →  PostgreSQL Database
         ↓
       JSP (view)
 ```
@@ -58,7 +58,7 @@ Servlet (controller)  →  DAO  →  Oracle Database
 - Java 17
 - Jakarta Servlet / JSP / JSTL
 - Maven (empacotamento `war`)
-- Oracle Database (JDBC via `ojdbc11`)
+- PostgreSQL (JDBC via `org.postgresql:postgresql`)
 - Jakarta Mail (Angus Mail)
 - Bootstrap 5
 
@@ -69,7 +69,7 @@ Servlet (controller)  →  DAO  →  Oracle Database
 - JDK 17+
 - Maven 3.9+
 - Um servidor de aplicação compatível com Servlet 6 / Jakarta EE 10 (ex.: Apache Tomcat 10+)
-- Acesso a uma instância Oracle Database
+- Acesso a uma instância PostgreSQL (local via Docker, ou remota, ex.: Azure Database for PostgreSQL Flexible Server)
 
 ### Configuração
 
@@ -81,15 +81,24 @@ O projeto lê as credenciais do banco a partir de variáveis de ambiente — **n
    cp .env.example .env
    ```
 
-2. Preencha `.env` com os dados da sua instância Oracle:
+2. Preencha `.env` com os dados da sua instância PostgreSQL. Para desenvolvimento local com Docker:
 
    ```
-   DB_URL=jdbc:oracle:thin:@host:1521:orcl
-   DB_USER=SEU_USUARIO
-   DB_PASSWORD=SUA_SENHA
+   DB_URL=jdbc:postgresql://localhost:5432/syncfin
+   DB_USER=syncfin
+   DB_PASSWORD=syncfin
+   ```
+
+   Para uma instância remota como o Azure Database for PostgreSQL Flexible Server, é necessário anexar `?sslmode=require` à URL:
+
+   ```
+   DB_URL=jdbc:postgresql://<servidor>.postgres.database.azure.com:5432/syncfin?sslmode=require
+   DB_USER=<usuario>
+   DB_PASSWORD=<senha>
    ```
 
 3. Exporte as variáveis no ambiente onde o servidor de aplicação for iniciado (ou configure-as na sua IDE / no `setenv.sh` do Tomcat), já que a aplicação as lê via `System.getenv(...)`.
+4. Crie o schema executando `db/schema-postgres.sql` na sua instância (por exemplo: `psql "$DB_URL" -f db/schema-postgres.sql`, ajustando usuário/senha conforme necessário).
 
 ### Build e execução
 
@@ -101,7 +110,7 @@ O artefato gerado em `target/syncFin.war` pode ser implantado em qualquer servid
 
 ## Estrutura do banco de dados
 
-O modelo de dados (lógico e físico) foi desenvolvido no Oracle SQL Developer Data Modeler ao longo da Fase 3 do curso, contemplando as entidades de cliente, conta bancária, receitas, despesas e investimentos, com as respectivas normalizações.
+O modelo de dados (lógico e físico) foi originalmente desenhado no Oracle SQL Developer Data Modeler ao longo da Fase 3 do curso, contemplando as entidades de cliente, conta bancária, receitas, despesas e investimentos, com as respectivas normalizações. O schema ativo do projeto hoje é PostgreSQL, evoluído a partir desse modelo, e está versionado em [`db/schema-postgres.sql`](db/schema-postgres.sql).
 
 ## Status do projeto
 

@@ -15,9 +15,9 @@ public class ConnectionFactory {
     public static Connection getConnection() throws SQLException {
 
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
+            Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            throw new SQLException("Driver JDBC não  encontrado");
+            throw new SQLException("Driver JDBC não encontrado");
         }
 
         if (URL == null || USUARIO == null || SENHA == null) {
