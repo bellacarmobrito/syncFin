@@ -13,10 +13,26 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet("/cadastro")
 public class CadastroServelet extends HttpServlet {
+
+    private Cadastro getClienteLogado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+
+        if (session == null) {
+            resp.sendRedirect("index.jsp");
+            return null;
+        }
+
+        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
+
+        if (cliente == null) {
+            resp.sendRedirect("index.jsp");
+            return null;
+        }
+        return cliente;
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -59,9 +75,19 @@ public class CadastroServelet extends HttpServlet {
 
     public void editar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try (CadastroDao dao = new CadastroDao()) {
+        Cadastro clienteLogado = getClienteLogado(req, resp);
+        if (clienteLogado == null) return;
 
-            int idCliente = Integer.parseInt(req.getParameter("codigo"));
+        int idCliente = Integer.parseInt(req.getParameter("codigo"));
+
+        if (idCliente != clienteLogado.getIdCliente()) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "Cadastro não localizado ou acesso negado.");
+            resp.sendRedirect("home");
+            return;
+        }
+
+        try (CadastroDao dao = new CadastroDao()) {
 
             String nomeCliente = req.getParameter("nomeCliente");
             String telefone = req.getParameter("telefone");
@@ -98,7 +124,16 @@ public class CadastroServelet extends HttpServlet {
 
     private void excluir(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        Cadastro clienteLogado = getClienteLogado(req, resp);
+        if (clienteLogado == null) return;
+
         int codigo = Integer.parseInt(req.getParameter("codigoExcluir"));
+
+        if (codigo != clienteLogado.getIdCliente()) {
+            req.setAttribute("erro", "Cadastro não localizado ou acesso negado.");
+            listar(req, resp);
+            return;
+        }
 
         try (CadastroDao dao = new CadastroDao()) {
             dao.inativarCadastro(codigo);
@@ -128,9 +163,19 @@ public class CadastroServelet extends HttpServlet {
 
     private void abrirForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try (CadastroDao dao = new CadastroDao()) {
+        Cadastro clienteLogado = getClienteLogado(req, resp);
+        if (clienteLogado == null) return;
 
-            int id = Integer.parseInt(req.getParameter("codigo"));
+        int id = Integer.parseInt(req.getParameter("codigo"));
+
+        if (id != clienteLogado.getIdCliente()) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "Cadastro não localizado ou acesso negado.");
+            resp.sendRedirect("home");
+            return;
+        }
+
+        try (CadastroDao dao = new CadastroDao()) {
             Cadastro cadastro = dao.pesquisar(id);
             req.setAttribute("cadastro", cadastro);
             req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
@@ -142,14 +187,10 @@ public class CadastroServelet extends HttpServlet {
     }
 
     private void listar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Cadastro> clientes;
 
-        try (CadastroDao dao = new CadastroDao()) {
-            clientes = dao.getAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        req.setAttribute("clientes", clientes);
+        Cadastro clienteLogado = getClienteLogado(req, resp);
+        if (clienteLogado == null) return;
+
         req.getRequestDispatcher("visualizar-cadastro.jsp").forward(req, resp);
     }
 }

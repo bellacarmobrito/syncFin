@@ -17,25 +17,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static br.com.fiap.syncfin.util.SessionUtils.getClienteLogado;
+
 @WebServlet("/receita")
 public class ReceitaServlet extends HttpServlet {
-
-    private Cadastro getClienteLogado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        HttpSession session = req.getSession(false);
-
-        if (session == null) {
-            resp.sendRedirect("index.jsp");
-            return null;
-        }
-
-        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
-
-        if (cliente == null) {
-            resp.sendRedirect("index.jsp");
-            return null;
-        }
-        return cliente;
-    }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String acao = req.getParameter("acao");
