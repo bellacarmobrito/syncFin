@@ -54,7 +54,7 @@
                     <input type="hidden" name="acao" value="cadastrar">
                     <div class="mb-3">
                         <label for="id-instituicao"><strong>Instituição Bancária</strong></label><br>
-                        <input type="text" name="instituicao" id="id-nome" class="form-control" required
+                        <input type="text" name="instituicao" id="id-instituicao" class="form-control" required
                                autocomplete="off">
                     </div>
 

@@ -235,7 +235,7 @@ public class InvestimentoServlet extends HttpServlet {
         investimento.setRecorrencia(recorrencia);
 
         try (InvestimentoDao investimentoDao = new InvestimentoDao()) {
-            investimentoDao.cadastrarInvestimento(investimento);
+            investimento.setId(investimentoDao.cadastrarInvestimento(investimento));
             req.setAttribute("mensagem", "Investimento cadastrado com sucesso!");
 
         } catch (SQLException e) {

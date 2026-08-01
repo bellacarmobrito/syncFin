@@ -35,9 +35,10 @@ public class ReceitaDao extends BaseDao {
         return receita;
     }
 
-    public void cadastrarReceita(Receita receita) throws SQLException {
+    public int cadastrarReceita(Receita receita) throws SQLException {
 
-        String sql = "INSERT INTO T_RECEITA (ID_CLIENTE, ID_CONTA, VL_RECEITA, CATEGORIA_RECEITA, DT_RECEBIMENTO, OB_RECEITA, ST_RECEITA) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO T_RECEITA (ID_CLIENTE, ID_CONTA, VL_RECEITA, CATEGORIA_RECEITA, DT_RECEBIMENTO, OB_RECEITA, ST_RECEITA) " +
+                "VALUES(?,?,?,?,?,?,?) RETURNING ID_RECEITA";
 
         try (PreparedStatement stm = conexao.prepareStatement(sql)) {
             stm.setInt(1, receita.getContaBancaria().getCliente().getIdCliente());
@@ -47,7 +48,13 @@ public class ReceitaDao extends BaseDao {
             stm.setDate(5, Date.valueOf(receita.getDataRecebimento()));
             stm.setString(6, receita.getDescricao());
             stm.setString(7, receita.getStatus());
-            stm.executeUpdate();
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Não foi possível gerar ID da receita.");
+                }
+                return rs.getInt(1);
+            }
         }
     }
 

@@ -20,27 +20,6 @@ public class Receita extends Transacao {
         this.descricao = descricao;
     }
 
-    public void atualizarStatus(String novoStatus){
-        if (getStatus().equals("Recebido") || getStatus().equals("Cancelado")){
-            System.out.println("Alteração não permitida. O status já foi definido como: " + getStatus());
-        }
-
-        switch (novoStatus){
-            case "Recebido":
-                setStatus(novoStatus);
-                getContaBancaria().depositar(getValor());
-                System.out.println("Status alterado para " + getStatus() + " e depósito no valor de R$ " + getValor() + " realizado na conta!");
-                break;
-            case "Cancelado":
-                setStatus(novoStatus);
-                System.out.println("Status alterado para " + getStatus() + ".");
-                break;
-            default:
-                System.out.println("Status inválido, utilize somente Recebido ou Cancelado.");
-        }
-
-    }
-
     @Override
     public void atualizarValor(Double novoValor) {
         if (novoValor != null){
@@ -50,33 +29,6 @@ public class Receita extends Transacao {
             System.out.println("Não foi possível atualizar o valor.");
         }
 
-    }
-
-    public void atualizarCategoria(String novaCategoria){
-        if (novaCategoria != null && !novaCategoria.isEmpty()){
-            this.categoria = novaCategoria;
-            System.out.println("Categoria atualizada com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar a categoria.");
-        }
-    }
-
-    public void atualizarRecebimento(LocalDate novoRecebimento){
-        if (novoRecebimento != null){
-            this.dataRecebimento = novoRecebimento;
-            System.out.println("Data do recebimento atualizado com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar a data do recebimento!");
-        }
-    }
-
-    public void atualizarDescricao(String novaDescricao){
-        if (novaDescricao != null && !novaDescricao.isEmpty()){
-            this.descricao = novaDescricao;
-            System.out.println("Descrição atualizada com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar a descrição.");
-        }
     }
 
     @Override

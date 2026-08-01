@@ -36,9 +36,10 @@ public class DespesaDao extends BaseDao {
     }
 
 
-    public void cadastrarDespesa(Despesa despesa) throws SQLException {
+    public int cadastrarDespesa(Despesa despesa) throws SQLException {
 
-        String sql = "INSERT INTO T_DESPESA (ID_CLIENTE, ID_CONTA, VL_DESPESA, CATEGORIA_DESPESA, DT_VENCIMENTO, OB_DESPESA, ST_DESPESA) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO T_DESPESA (ID_CLIENTE, ID_CONTA, VL_DESPESA, CATEGORIA_DESPESA, DT_VENCIMENTO, OB_DESPESA, ST_DESPESA) " +
+                "VALUES(?,?,?,?,?,?,?) RETURNING ID_DESPESA";
 
         try (PreparedStatement stm = conexao.prepareStatement(sql)) {
             stm.setInt(1, despesa.getContaBancaria().getCliente().getIdCliente());
@@ -48,9 +49,14 @@ public class DespesaDao extends BaseDao {
             stm.setDate(5, Date.valueOf(despesa.getVencimento()));
             stm.setString(6, despesa.getDescricao());
             stm.setString(7, despesa.getStatus());
-            stm.executeUpdate();
-        }
 
+            try (ResultSet rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Não foi possível gerar ID da despesa.");
+                }
+                return rs.getInt(1);
+            }
+        }
     }
 
     public Despesa pesquisarDespesaPorId(int idDespesa) throws SQLException, EntidadeNaoEncontradaException {

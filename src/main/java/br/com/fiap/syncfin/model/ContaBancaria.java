@@ -13,39 +13,6 @@ public class ContaBancaria extends Conta {
         this.tipoConta = tipoConta;
     }
 
-    public ContaBancaria(int idCliente, String nomeInstituicao, String agencia, String tipoConta, String numeroConta, double saldo) {
-        super(nomeInstituicao, agencia, numeroConta, saldo);
-        this.cliente = new Cadastro();
-        this.cliente.setIdCliente(idCliente);
-        this.tipoConta = tipoConta;
-    }
-
-
-    public void transferir(ContaBancaria destino, double valor){
-        if (destino != null && valor <= getSaldo()){
-            setSaldo(getSaldo() - valor);
-            destino.depositar(valor);
-            System.out.println("Transferência no valor de R$ " + valor + "para conta " + destino + " realizada com sucesso!");
-        } else {
-            System.out.println("Transferência não realizada.");
-        }
-    }
-
-    public void exibirSaldo(){
-        System.out.println("Seu saldo atual é de R$ " + getSaldo());
-    }
-
-    public void exibirConta(){
-        System.out.println("Detalhamento da Conta");
-        System.out.println("-------------------------------------------");
-        System.out.println("ID da Conta: " + getIdConta());
-        System.out.println("Banco: " + getNomeInstituicao() );
-        System.out.println("Agência: " + getAgencia());
-        System.out.println("Conta: " + getNumeroConta());
-        System.out.println("Tipo de conta: " + getTipoConta());
-        System.out.println("Saldo: R$ " + getSaldo());
-    }
-
     public int getIdConta() {
         return idConta;
     }

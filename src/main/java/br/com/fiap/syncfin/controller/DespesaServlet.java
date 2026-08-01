@@ -232,7 +232,7 @@ public class DespesaServlet extends HttpServlet {
         despesa.setStatus(status);
 
         try (DespesaDao despesaDao = new DespesaDao()) {
-            despesaDao.cadastrarDespesa(despesa);
+            despesa.setId(despesaDao.cadastrarDespesa(despesa));
             req.setAttribute("mensagem", "Despesa cadastrada com sucesso!");
 
         } catch (SQLException e) {

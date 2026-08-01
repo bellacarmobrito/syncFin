@@ -18,7 +18,6 @@ public class Despesa extends Transacao {
         this.categoria = categoria;
         this.vencimento = vencimento;
         this.descricao = descricao;
-
     }
 
     @Override
@@ -28,43 +27,6 @@ public class Despesa extends Transacao {
             System.out.println("Valor da despesa atualizada com sucesso!");
         } else {
             System.out.println("Não foi possível atualizar o valor.");
-        }
-
-    }
-
-    public void atualizarCategoria(String novaCategoria){
-        if (novaCategoria != null && !novaCategoria.isEmpty()){
-            this.categoria = novaCategoria;
-            System.out.println("Categoria atualizada com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar a categoria.");
-        }
-    }
-
-    public void atualizarVencimento(LocalDate novoVencimento){
-        if (novoVencimento != null){
-            this.vencimento = novoVencimento;
-            System.out.println("Vencimento atualizado com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar o vencimento!");
-        }
-    }
-
-    public void atualizarDescricao(String novaDescricao){
-        if (novaDescricao != null && !novaDescricao.isEmpty()){
-            this.descricao = novaDescricao;
-            System.out.println("Descrição atualizada com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar a descrição.");
-        }
-    }
-
-    public void atualizarStatus(String novoStatus){
-        if (novoStatus != null && !novoStatus.isEmpty()){
-            setStatus(novoStatus);
-            System.out.println("Status atualizado com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar o status.");
         }
     }
 

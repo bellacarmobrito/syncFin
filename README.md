@@ -59,7 +59,7 @@ Servlet (controller)  →  DAO  →  PostgreSQL Database
 - Jakarta Servlet / JSP / JSTL
 - Maven (empacotamento `war`)
 - PostgreSQL (JDBC via `org.postgresql:postgresql`)
-- Jakarta Mail (Angus Mail)
+- BCrypt (`org.mindrot:jbcrypt`) para hash de senha
 - Bootstrap 5
 
 ## Como executar localmente
@@ -112,9 +112,13 @@ O artefato gerado em `target/syncFin.war` pode ser implantado em qualquer servid
 
 O modelo de dados (lógico e físico) foi originalmente desenhado no Oracle SQL Developer Data Modeler ao longo da Fase 3 do curso, contemplando as entidades de cliente, conta bancária, receitas, despesas e investimentos, com as respectivas normalizações. O schema ativo do projeto hoje é PostgreSQL, evoluído a partir desse modelo, e está versionado em [`db/schema-postgres.sql`](db/schema-postgres.sql).
 
+## Limitações conhecidas
+
+- **Sem proteção CSRF.** Os formulários que alteram dado (cadastro, edição, exclusão) não carregam token anti-CSRF, então uma requisição forjada por um site externo poderia, em tese, ser executada em nome de um usuário autenticado enquanto sua sessão estiver ativa. Mitigar isso de forma consistente exigiria introduzir geração/validação de token de sessão em todos os formulários e Servlets que fazem `POST` — uma mudança arquitetural mais ampla do que as demais correções deste projeto, por isso foi conscientemente adiada em vez de resolvida parcialmente. Fica documentado aqui como débito técnico conhecido, não como descuido.
+
 ## Status do projeto
 
-Projeto entregue como Trabalho de Conclusão do curso de ADS (FIAP) e em evolução contínua — o histórico de commits documenta refatorações incrementais como padronização do fechamento de conexões (try-with-resources), validação de posse (ownership) nos DAOs e ajustes de autenticação/sessão.
+Projeto desenvolvido durante o ano primeiro ano letivo do curso de ADS (FIAP) e em evolução contínua — o histórico de commits documenta refatorações incrementais como padronização do fechamento de conexões (try-with-resources), validação de posse (ownership) nos DAOs e ajustes de autenticação/sessão.
 
 ## Autor
 

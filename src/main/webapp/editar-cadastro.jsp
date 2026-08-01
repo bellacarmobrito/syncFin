@@ -65,7 +65,7 @@
                         <input type="text" name="email" id="id-email" class="form-control" value="<c:out value="${cadastro.email}"/>" required>
                     </div>
                     <div class="mb-3">
-                        <label for="id-cpf"><strong>Senha</strong></label><br>
+                        <label for="id-senha"><strong>Senha</strong></label><br>
                         <input type="password" name="senha" id="id-senha" class="form-control">
                     </div>
 

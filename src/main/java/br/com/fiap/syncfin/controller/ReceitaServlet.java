@@ -228,7 +228,7 @@ public class ReceitaServlet extends HttpServlet {
         receita.setStatus(status);
 
         try (ReceitaDao receitaDao = new ReceitaDao()) {
-            receitaDao.cadastrarReceita(receita);
+            receita.setId(receitaDao.cadastrarReceita(receita));
             req.setAttribute("mensagem", "Receita cadastrada com sucesso!");
 
         } catch (SQLException e) {
