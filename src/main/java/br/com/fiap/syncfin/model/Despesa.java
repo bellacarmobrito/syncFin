@@ -1,8 +1,12 @@
 package br.com.fiap.syncfin.model;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public class Despesa extends Transacao {
+
+    public static final Set<String> STATUS_VALIDOS = Set.of("Pendente", "Pago", "Vencida");
+
     private String categoria;
     private LocalDate vencimento;
     private String descricao;

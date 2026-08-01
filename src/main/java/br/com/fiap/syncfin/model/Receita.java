@@ -1,8 +1,12 @@
 package br.com.fiap.syncfin.model;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public class Receita extends Transacao {
+
+    public static final Set<String> STATUS_VALIDOS = Set.of("Recebido", "Pendente", "Programada");
+
     private String categoria;
     private LocalDate dataRecebimento;
     private String descricao;

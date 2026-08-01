@@ -12,9 +12,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import br.com.fiap.syncfin.util.ValidationUtils;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static br.com.fiap.syncfin.util.SessionUtils.getClienteLogado;
@@ -107,13 +110,38 @@ public class ReceitaServlet extends HttpServlet {
             return;
         }
 
-        try (ReceitaDao receitaDao = new ReceitaDao()) {
-            String categoria = req.getParameter("categoria");
-            String descricao = req.getParameter("descricao");
-            String status = req.getParameter("status");
-            LocalDate recebimento = LocalDate.parse(req.getParameter("dataRecebimento"));
+        String categoria = req.getParameter("categoria");
+        String descricao = req.getParameter("descricao");
+        String status = req.getParameter("status");
 
-            double valor = Double.parseDouble(req.getParameter("valor"));
+        try (ReceitaDao receitaDao = new ReceitaDao()) {
+
+            if (ValidationUtils.algumEmBranco(categoria) || status == null || !Receita.STATUS_VALIDOS.contains(status)) {
+                req.setAttribute("erro", "Categoria é obrigatória e status deve ser Recebido, Pendente ou Programada.");
+                Receita atual = receitaDao.pesquisarReceitaPorIdDoCliente(cliente.getIdCliente(), idReceita);
+                req.setAttribute("receita", atual);
+                req.getRequestDispatcher("editar-receita.jsp").forward(req, resp);
+                return;
+            }
+
+            double valor;
+            LocalDate recebimento;
+            try {
+                valor = Double.parseDouble(req.getParameter("valor"));
+                recebimento = LocalDate.parse(req.getParameter("dataRecebimento"));
+            } catch (NumberFormatException e) {
+                req.setAttribute("erro", "Valor inválido.");
+                Receita atual = receitaDao.pesquisarReceitaPorIdDoCliente(cliente.getIdCliente(), idReceita);
+                req.setAttribute("receita", atual);
+                req.getRequestDispatcher("editar-receita.jsp").forward(req, resp);
+                return;
+            } catch (DateTimeParseException e) {
+                req.setAttribute("erro", "Data de recebimento inválida.");
+                Receita atual = receitaDao.pesquisarReceitaPorIdDoCliente(cliente.getIdCliente(), idReceita);
+                req.setAttribute("receita", atual);
+                req.getRequestDispatcher("editar-receita.jsp").forward(req, resp);
+                return;
+            }
 
             if (valor <= 0) {
                 req.setAttribute("erro", "O valor da receita deve ser maior que zero.");
@@ -138,9 +166,9 @@ public class ReceitaServlet extends HttpServlet {
 
         } catch (EntidadeNaoEncontradaException e) {
             req.setAttribute("erro", e.getMessage());
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            req.setAttribute("erro", "Erro ao atualizar receita.");
+            req.setAttribute("erro", "Erro ao atualizar receita. Tente novamente.");
         }
 
         req.getRequestDispatcher("editar-receita.jsp").forward(req, resp);
@@ -158,35 +186,54 @@ public class ReceitaServlet extends HttpServlet {
             return;
         }
 
+        String categoria = req.getParameter("categoria");
+        String descricao = req.getParameter("descricao");
+        String status = req.getParameter("status");
+
+        if (ValidationUtils.algumEmBranco(categoria) || status == null || !Receita.STATUS_VALIDOS.contains(status)) {
+            req.setAttribute("erro", "Categoria é obrigatória e status deve ser Recebido, Pendente ou Programada.");
+            req.getRequestDispatcher("cadastro-receita.jsp").forward(req, resp);
+            return;
+        }
+
+        double valor;
+        LocalDate recebimento;
+        try {
+            valor = Double.parseDouble(req.getParameter("valor"));
+            recebimento = LocalDate.parse(req.getParameter("dataRecebimento"));
+        } catch (NumberFormatException e) {
+            req.setAttribute("erro", "Valor inválido.");
+            req.getRequestDispatcher("cadastro-receita.jsp").forward(req, resp);
+            return;
+        } catch (DateTimeParseException e) {
+            req.setAttribute("erro", "Data de recebimento inválida.");
+            req.getRequestDispatcher("cadastro-receita.jsp").forward(req, resp);
+            return;
+        }
+
+        if (valor <= 0) {
+            req.setAttribute("erro", "Valor da receita deve ser maior que zero.");
+            req.getRequestDispatcher("cadastro-receita.jsp").forward(req, resp);
+            return;
+        }
+
+        conta.setCliente(cliente);
+
+        Receita receita = new Receita();
+        receita.setContaBancaria(conta);
+        receita.setValor(valor);
+        receita.setCategoria(categoria);
+        receita.setDataRecebimento(recebimento);
+        receita.setDescricao(descricao);
+        receita.setStatus(status);
+
         try (ReceitaDao receitaDao = new ReceitaDao()) {
-            double valor = Double.parseDouble(req.getParameter("valor"));
-            String categoria = req.getParameter("categoria");
-            LocalDate recebimento = LocalDate.parse(req.getParameter("dataRecebimento"));
-            String descricao = req.getParameter("descricao");
-            String status = req.getParameter("status");
-
-            if (valor <= 0) {
-                req.setAttribute("erro", "Valor da receita deve ser maior que zero.");
-                req.getRequestDispatcher("cadastro-receita.jsp").forward(req, resp);
-                return;
-            }
-
-            conta.setCliente(cliente);
-
-            Receita receita = new Receita();
-            receita.setContaBancaria(conta);
-            receita.setValor(valor);
-            receita.setCategoria(categoria);
-            receita.setDataRecebimento(recebimento);
-            receita.setDescricao(descricao);
-            receita.setStatus(status);
-
             receitaDao.cadastrarReceita(receita);
             req.setAttribute("mensagem", "Receita cadastrada com sucesso!");
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            req.setAttribute("erro", "Erro ao cadastrar receita");
+            req.setAttribute("erro", "Erro ao cadastrar receita. Tente novamente.");
         }
         req.getRequestDispatcher("cadastro-receita.jsp").forward(req, resp);
     }

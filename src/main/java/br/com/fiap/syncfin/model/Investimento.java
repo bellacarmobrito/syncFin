@@ -2,9 +2,13 @@ package br.com.fiap.syncfin.model;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Set;
 
 
 public class Investimento extends Transacao{
+
+    public static final Set<String> STATUS_VALIDOS = Set.of("Ativo", "Resgatado");
+
     private String tipoInvestimento;
     private LocalDate dataInvestimento;
     private LocalDate dataVencimento;

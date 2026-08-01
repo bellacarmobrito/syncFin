@@ -39,16 +39,12 @@ public class CadastroServelet extends HttpServlet {
 
         String acao = req.getParameter("acao");
 
-        switch (acao) {
-            case "cadastrar":
-                cadastrar(req, resp);
-                break;
-            case "editar":
-                editar(req, resp);
-                break;
-            case "excluir":
-                excluir(req, resp);
-
+        if ("cadastrar".equals(acao)) {
+            cadastrar(req, resp);
+        } else if ("editar".equals(acao)) {
+            editar(req, resp);
+        } else if ("excluir".equals(acao)) {
+            excluir(req, resp);
         }
     }
 
@@ -78,7 +74,15 @@ public class CadastroServelet extends HttpServlet {
         Cadastro clienteLogado = getClienteLogado(req, resp);
         if (clienteLogado == null) return;
 
-        int idCliente = Integer.parseInt(req.getParameter("codigo"));
+        int idCliente;
+        try {
+            idCliente = Integer.parseInt(req.getParameter("codigo"));
+        } catch (NumberFormatException e) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "Cadastro inválido.");
+            resp.sendRedirect("home");
+            return;
+        }
 
         if (idCliente != clienteLogado.getIdCliente()) {
             HttpSession session = req.getSession(false);
@@ -119,6 +123,9 @@ public class CadastroServelet extends HttpServlet {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao atualizar");
             req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
+        } catch (EntidadeNaoEncontradaException e) {
+            req.setAttribute("erro", e.getMessage());
+            req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
         }
     }
 
@@ -127,7 +134,14 @@ public class CadastroServelet extends HttpServlet {
         Cadastro clienteLogado = getClienteLogado(req, resp);
         if (clienteLogado == null) return;
 
-        int codigo = Integer.parseInt(req.getParameter("codigoExcluir"));
+        int codigo;
+        try {
+            codigo = Integer.parseInt(req.getParameter("codigoExcluir"));
+        } catch (NumberFormatException e) {
+            req.setAttribute("erro", "Cadastro inválido.");
+            listar(req, resp);
+            return;
+        }
 
         if (codigo != clienteLogado.getIdCliente()) {
             req.setAttribute("erro", "Cadastro não localizado ou acesso negado.");
@@ -151,13 +165,10 @@ public class CadastroServelet extends HttpServlet {
 
         String acao = req.getParameter("acao");
 
-        switch (acao) {
-            case "listar":
-                listar(req, resp);
-                break;
-            case "abrir-form-edicao":
-                abrirForm(req, resp);
-                break;
+        if ("listar".equals(acao)) {
+            listar(req, resp);
+        } else if ("abrir-form-edicao".equals(acao)) {
+            abrirForm(req, resp);
         }
     }
 
@@ -166,7 +177,15 @@ public class CadastroServelet extends HttpServlet {
         Cadastro clienteLogado = getClienteLogado(req, resp);
         if (clienteLogado == null) return;
 
-        int id = Integer.parseInt(req.getParameter("codigo"));
+        int id;
+        try {
+            id = Integer.parseInt(req.getParameter("codigo"));
+        } catch (NumberFormatException e) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "Cadastro inválido.");
+            resp.sendRedirect("home");
+            return;
+        }
 
         if (id != clienteLogado.getIdCliente()) {
             HttpSession session = req.getSession(false);
