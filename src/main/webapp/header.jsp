@@ -106,7 +106,7 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item" href="login" style="font-size: 14px">
+                            <a class="dropdown-item" href="logout" style="font-size: 14px">
                                 <i class="bi bi-box-arrow-right me-2"></i> Sair
                             </a>
                         </li>

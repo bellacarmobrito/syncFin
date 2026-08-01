@@ -227,12 +227,12 @@ public class DespesaServlet extends HttpServlet {
 
         try (DespesaDao despesaDao = new DespesaDao()) {
 
-            Despesa despesa = despesaDao.pesquisarDespesaPorIdDoCliente(idDespesa, cliente.getIdCliente());
+            Despesa despesa = despesaDao.pesquisarDespesaPorIdDoCliente(cliente.getIdCliente(), idDespesa);
 
             if ("Pago".equalsIgnoreCase(despesa.getStatus())) {
                 req.setAttribute("erro", "Despesas com status 'Pago' não podem ser excluídas.");
             } else {
-                despesaDao.deletarDespesaDoCliente(cliente.getIdCliente(), idDespesa);
+                despesaDao.deletarDespesaDoCliente(idDespesa, cliente.getIdCliente());
                 req.setAttribute("mensagem", "Despesa excluída com sucesso!");
             }
 

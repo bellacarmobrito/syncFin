@@ -42,11 +42,10 @@ public class CadastroServelet extends HttpServlet {
         String cpf = req.getParameter("cpf");
         String email = req.getParameter("email");
         String senha = req.getParameter("senha");
-        String status = req.getParameter("status");
 
         senha = CriptografiaUtils.criptografar(senha);
 
-        Cadastro cadastro = new Cadastro(nomeCliente, telefone, cpf, email, senha, status);
+        Cadastro cadastro = new Cadastro(nomeCliente, telefone, cpf, email, senha, null);
 
         try (CadastroDao dao = new CadastroDao()) {
             dao.cadastrar(cadastro);

@@ -85,7 +85,7 @@
 
                     <div class="mb-3">
                         <label for="id-saldo"><strong>Saldo</strong></label><br>
-                        <input type="number" step="0.01" name="saldo" id="id-saldo" class="form-control">
+                        <input type="number" step="0.01" name="saldo" id="id-saldo" class="form-control" required>
                     </div>
 
                     <div class="d-flex justify-content-center mt-4">

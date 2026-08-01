@@ -44,28 +44,23 @@
                 <form action="cadastro?acao=cadastrar" method="post">
                     <div class="mb-3">
                         <label for="id-nome"><strong>Nome</strong></label><br>
-                        <input type="text" name="nomeCliente" id="id-nome" class="form-control" autocomplete="off">
+                        <input type="text" name="nomeCliente" id="id-nome" class="form-control" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-telefone"><strong>Telefone</strong></label><br>
-                        <input type="text" name="telefone" id="id-telefone" class="form-control" autocomplete="off">
+                        <input type="text" name="telefone" id="id-telefone" class="form-control" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-cpf"><strong>CPF</strong></label><br>
-                        <input type="text" name="cpf" id="id-cpf" class="form-control" autocomplete="off">
+                        <input type="text" name="cpf" id="id-cpf" class="form-control" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-email"><strong>E-mail</strong></label><br>
-                        <input type="text" name="email" id="id-email" class="form-control" autocomplete="off">
+                        <input type="email" name="email" id="id-email" class="form-control" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
-                        <label for="id-cpf"><strong>Senha</strong></label><br>
-                        <input type="password" name="senha" id="id-senha" class="form-control" autocomplete="off">
-                    </div>
-                    <div class="form-group" type="hidden">
-                        <label type="hidden" for="id-status"></label><br>
-                        <input type="hidden" name="status" id="id-status" class="form-control" value="Ativo"
-                               autocomplete="off">
+                        <label for="id-senha"><strong>Senha</strong></label><br>
+                        <input type="password" name="senha" id="id-senha" class="form-control" autocomplete="off" required>
                     </div>
 
                     <div class="d-flex justify-content-center">

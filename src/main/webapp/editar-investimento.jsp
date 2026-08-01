@@ -99,7 +99,7 @@
                     <div class="mb-3">
                         <label for="rendimento"><strong>Rendimento</strong></label><br>
                         <input type="number" name="rendimento" step="0.01" min="0.01" id="rendimento"
-                               class="form-control" value="${investimento.rendimento}">
+                               class="form-control" value="${investimento.rendimento}" required>
                     </div>
 
                     <div class="mb-3">
