@@ -18,7 +18,7 @@
 <%@include file="header.jsp" %>
 
 <jsp:include page="back-button.jsp">
-    <jsp:param name="fallback" value="receita?acao=listar"/>
+    <jsp:param name="fallback" value="conta-bancaria?acao=listar"/>
     <jsp:param name="label" value="Voltar"/>
 </jsp:include>
 

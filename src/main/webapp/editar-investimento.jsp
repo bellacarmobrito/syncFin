@@ -90,8 +90,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="dataVencimento"><strong>Data de Vencimento</strong></label><br>
-                        <input type="date" name="dataVencimento" id="dataVencimento" class="form-control" required
+                        <label for="dataVencimento"><strong>Data de Vencimento (opcional)</strong></label><br>
+                        <input type="date" name="dataVencimento" id="dataVencimento" class="form-control"
                                value="${investimento.dataVencimento}">
                     </div>
 

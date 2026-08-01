@@ -109,38 +109,34 @@ public class InvestimentoServlet extends HttpServlet {
             return;
         }
 
-        try (InvestimentoDao investimentoDao = new InvestimentoDao()) {
-            double valor = Double.parseDouble(req.getParameter("valor"));
-            String status = req.getParameter("status");
-            String tipoInvestimento = req.getParameter("tipoInvestimento");
-            LocalDate dataInvestimento = LocalDate.parse(req.getParameter("dataInvestimento"));
+        Investimento investimento = new Investimento();
+        investimento.setId(id);
+        investimento.setStatus(req.getParameter("status"));
+        investimento.setTipoInvestimento(req.getParameter("tipoInvestimento"));
+        investimento.setRecorrencia(req.getParameter("recorrencia"));
+
+        try {
+            investimento.setValor(Double.parseDouble(req.getParameter("valor")));
+            investimento.setDataInvestimento(LocalDate.parse(req.getParameter("dataInvestimento")));
             String vencStr = req.getParameter("dataVencimento");
-            LocalDate vencimento = (vencStr == null || vencStr.isBlank()) ? null : LocalDate.parse(vencStr);
-            double rendimento = Double.parseDouble(req.getParameter("rendimento"));
-            String recorrencia = req.getParameter("recorrencia");
-
-            if (valor <= 0) {
-                req.setAttribute("erro", "Valor do investimento deve ser maior que zero.");
-                Investimento atual = investimentoDao.pesquisarInvestimentoPorIdDoCliente(cliente.getIdCliente(), id);
-                req.setAttribute("investimento", atual);
-                req.getRequestDispatcher("editar-investimento.jsp").forward(req, resp);
-                return;
-            }
-
-            Investimento investimento = new Investimento();
-
-            investimento.setId(id);
-            investimento.setValor(valor);
-            investimento.setStatus(status);
-            investimento.setTipoInvestimento(tipoInvestimento);
-            investimento.setDataInvestimento(dataInvestimento);
-            investimento.setDataVencimento(vencimento);
-            investimento.setRendimento(rendimento);
-            investimento.setRecorrencia(recorrencia);
-
-            investimentoDao.atualizarInvestimentoDoCliente(investimento, cliente.getIdCliente());
-
+            investimento.setDataVencimento((vencStr == null || vencStr.isBlank()) ? null : LocalDate.parse(vencStr));
+            investimento.setRendimento(Double.parseDouble(req.getParameter("rendimento")));
+        } catch (Exception e) {
+            req.setAttribute("erro", "Valor, rendimento ou data inválidos.");
             req.setAttribute("investimento", investimento);
+            req.getRequestDispatcher("editar-investimento.jsp").forward(req, resp);
+            return;
+        }
+
+        if (investimento.getValor() <= 0) {
+            req.setAttribute("erro", "Valor do investimento deve ser maior que zero.");
+            req.setAttribute("investimento", investimento);
+            req.getRequestDispatcher("editar-investimento.jsp").forward(req, resp);
+            return;
+        }
+
+        try (InvestimentoDao investimentoDao = new InvestimentoDao()) {
+            investimentoDao.atualizarInvestimentoDoCliente(investimento, cliente.getIdCliente());
             req.setAttribute("mensagem", "Investimento atualizado com sucesso!");
 
         } catch (EntidadeNaoEncontradaException e) {
@@ -151,6 +147,7 @@ public class InvestimentoServlet extends HttpServlet {
             req.setAttribute("erro", "Erro ao atualizar investimento");
         }
 
+        req.setAttribute("investimento", investimento);
         req.getRequestDispatcher("editar-investimento.jsp").forward(req, resp);
     }
 

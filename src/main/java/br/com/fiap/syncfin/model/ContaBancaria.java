@@ -4,7 +4,6 @@ public class ContaBancaria extends Conta {
     private int idConta;
     private Cadastro cliente;
     private String tipoConta;
-    private boolean status;
 
     public ContaBancaria(){}
 
@@ -12,7 +11,6 @@ public class ContaBancaria extends Conta {
         super(nomeInstituicao, agencia, numeroConta, saldo);
         this.cliente = cliente;
         this.tipoConta = tipoConta;
-        this.status = true;
     }
 
     public ContaBancaria(int idCliente, String nomeInstituicao, String agencia, String tipoConta, String numeroConta, double saldo) {
@@ -20,7 +18,6 @@ public class ContaBancaria extends Conta {
         this.cliente = new Cadastro();
         this.cliente.setIdCliente(idCliente);
         this.tipoConta = tipoConta;
-        this.status = true;
     }
 
 
@@ -47,7 +44,6 @@ public class ContaBancaria extends Conta {
         System.out.println("Conta: " + getNumeroConta());
         System.out.println("Tipo de conta: " + getTipoConta());
         System.out.println("Saldo: R$ " + getSaldo());
-        System.out.println("Status Conta: " + (isStatus() ? "Ativa" : "Inativa"));
     }
 
     public int getIdConta() {
@@ -72,14 +68,6 @@ public class ContaBancaria extends Conta {
 
     public void setTipoConta(String tipoConta) {
         this.tipoConta = tipoConta;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
     }
 
 }

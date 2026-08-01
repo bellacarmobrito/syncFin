@@ -62,7 +62,12 @@ public class Investimento extends Transacao{
     }
 
     public void calcularRendimento(){
-       double valorFinal = getValor();
+        if (this.recorrencia == null || this.dataVencimento == null) {
+            System.out.println("Este investimento não possui recorrência ou data de vencimento definidas; rendimento não aplicável.");
+            return;
+        }
+
+        double valorFinal = getValor();
 
         switch (this.recorrencia.toUpperCase()) {
             case "MENSAL":
@@ -84,6 +89,11 @@ public class Investimento extends Transacao{
     }
 
     private void acompanharInvestimento(){
+        if (this.recorrencia == null) {
+            System.out.println("Este investimento não possui recorrência definida; acompanhamento não aplicável.");
+            return;
+        }
+
         double valorAtual = getValor();
         LocalDate hoje = LocalDate.now();
 
