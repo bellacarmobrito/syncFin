@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="./resources/css/global.css">
 </head>
 <body class="min-vh-100">
-<%--<%@include file="header.jsp" %>--%>
 
 <div class="d-flex min-vh-100">
     <%@include file="sidebar.jsp" %>
@@ -26,7 +25,7 @@
         <main class="flex-grow-1">
 
             <h3 class="mt-5 mb-4 text-center" style="color: #1F2A44">
-                Olá ${cliente.nomeCliente}!
+                Olá <c:out value="${cliente.nomeCliente}"/>!
             </h3>
 
             <div class="container mb-5">
@@ -69,8 +68,8 @@
                                             <c:forEach items="${contas}" var="conta">
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                                     <div>
-                                                        <strong>${conta.nomeInstituicao}</strong><br>
-                                                        <p> Agência ${conta.agencia}, Conta ${conta.numeroConta}
+                                                        <strong><c:out value="${conta.nomeInstituicao}"/></strong><br>
+                                                        <p> Agência <c:out value="${conta.agencia}"/>, Conta <c:out value="${conta.numeroConta}"/>
                                                             (${conta.tipoConta})</p>
                                                     </div>
                                                     <span class="badge text-white fw-light"

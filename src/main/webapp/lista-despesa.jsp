@@ -61,7 +61,7 @@
                             <c:forEach items="${despesas}" var="despesa">
                                 <tr>
                                     <td class="text-start">${despesa.categoria}</td>
-                                    <td>${despesa.descricao}</td>
+                                    <td><c:out value="${despesa.descricao}"/></td>
                                     <td class="text-start">
                                         <fmt:formatNumber
                                                 value="${despesa.valor}"

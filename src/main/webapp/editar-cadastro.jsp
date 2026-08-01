@@ -49,20 +49,20 @@
                     <div class="mb-3">
                         <label for="id-nome"><strong>Nome</strong></label><br>
                         <input type="text" name="nomeCliente" id="id-nome" class="form-control"
-                               value="${cadastro.nomeCliente}" required>
+                               value="<c:out value="${cadastro.nomeCliente}"/>" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-telefone"><strong>Telefone</strong></label><br>
                         <input type="text" name="telefone" id="id-telefone" class="form-control"
-                               value="${cadastro.celular}" required>
+                               value="<c:out value="${cadastro.celular}"/>" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-cpf"><strong>CPF</strong></label><br>
-                        <input type="text" name="cpf" id="id-cpf" class="form-control" value="${cadastro.cpf}" required>
+                        <input type="text" name="cpf" id="id-cpf" class="form-control" value="<c:out value="${cadastro.cpf}"/>" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-email"><strong>E-mail</strong></label><br>
-                        <input type="text" name="email" id="id-email" class="form-control" value="${cadastro.email}" required>
+                        <input type="text" name="email" id="id-email" class="form-control" value="<c:out value="${cadastro.email}"/>" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-cpf"><strong>Senha</strong></label><br>

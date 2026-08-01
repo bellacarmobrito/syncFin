@@ -26,7 +26,7 @@
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
                                             <div class="fw-semibold">${r.categoria}</div>
-                                            <small class="text-muted">${r.descricao}</small><br>
+                                            <small class="text-muted"><c:out value="${r.descricao}"/></small><br>
 
                                             <small class="text-muted">
                                                 <fmt:parseDate value="${r.dataRecebimento}" pattern="yyyy-MM-dd"
@@ -75,7 +75,7 @@
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
                                             <div class="fw-semibold">${d.categoria}</div>
-                                            <small class="text-muted">${d.descricao}</small><br>
+                                            <small class="text-muted"><c:out value="${d.descricao}"/></small><br>
 
                                             <small class="text-muted">
                                                 <fmt:parseDate value="${d.vencimento}" pattern="yyyy-MM-dd"

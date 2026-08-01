@@ -84,7 +84,7 @@
                             data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 14px">
                         <i class="bi bi-person-circle text-white fs-4"></i>
                         <span class="text-white">
-                                ${cliente.nomeCliente}
+                                <c:out value="${cliente.nomeCliente}"/>
                         </span>
                     </button>
 

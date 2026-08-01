@@ -35,22 +35,22 @@
                 <form>
                     <div class="mb-3">
                         <label class="form-label"><strong>Nome</strong></label><br>
-                        <input type="text" class="form-control" value="${cliente.nomeCliente}" readonly>
+                        <input type="text" class="form-control" value="<c:out value="${cliente.nomeCliente}"/>" readonly>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label"><strong>Telefone</strong></label><br>
-                        <input type="text" class="form-control" value="${cliente.celular}" readonly>
+                        <input type="text" class="form-control" value="<c:out value="${cliente.celular}"/>" readonly>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label"><strong>CPF</strong></label><br>
-                        <input type="text" class="form-control" value="${cliente.cpf}" readonly>
+                        <input type="text" class="form-control" value="<c:out value="${cliente.cpf}"/>" readonly>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label"><strong>Email</strong></label><br>
-                        <input type="email" class="form-control" value="${cliente.email}" readonly>
+                        <input type="email" class="form-control" value="<c:out value="${cliente.email}"/>" readonly>
                     </div>
 
                     <div class="text-center mt-4">
