@@ -3,6 +3,7 @@ package br.com.fiap.syncfin.controller;
 import br.com.fiap.syncfin.dao.CadastroDao;
 import br.com.fiap.syncfin.exception.EntidadeNaoEncontradaException;
 import br.com.fiap.syncfin.model.Cadastro;
+import br.com.fiap.syncfin.util.CpfUtils;
 import br.com.fiap.syncfin.util.CriptografiaUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -55,6 +56,12 @@ public class CadastroServelet extends HttpServlet {
         String email = req.getParameter("email");
         String senha = req.getParameter("senha");
 
+        if (!CpfUtils.isCpfValido(cpf)) {
+            req.setAttribute("erro", "CPF inválido.");
+            req.getRequestDispatcher("cadastro-cliente.jsp").forward(req, resp);
+            return;
+        }
+
         senha = CriptografiaUtils.criptografar(senha);
 
         Cadastro cadastro = new Cadastro(nomeCliente, telefone, cpf, email, senha, null);
@@ -91,11 +98,19 @@ public class CadastroServelet extends HttpServlet {
             return;
         }
 
+        String cpf = req.getParameter("cpf");
+
+        if (!CpfUtils.isCpfValido(cpf)) {
+            req.setAttribute("erro", "CPF inválido.");
+            req.setAttribute("cadastro", clienteLogado);
+            req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
+            return;
+        }
+
         try (CadastroDao dao = new CadastroDao()) {
 
             String nomeCliente = req.getParameter("nomeCliente");
             String telefone = req.getParameter("telefone");
-            String cpf = req.getParameter("cpf");
             String email = req.getParameter("email");
             String senha = req.getParameter("senha");
 
