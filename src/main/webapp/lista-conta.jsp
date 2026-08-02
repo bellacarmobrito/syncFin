@@ -18,7 +18,7 @@
 <%@include file="header.jsp" %>
 
 <jsp:include page="back-button.jsp">
-    <jsp:param name="fallback" value="receita?acao=listar"/>
+    <jsp:param name="fallback" value="conta-bancaria?acao=listar"/>
     <jsp:param name="label" value="Voltar"/>
 </jsp:include>
 
@@ -60,9 +60,9 @@
                             <tbody>
                             <c:forEach items="${contas}" var="conta">
                                 <tr>
-                                    <td class="text-start">${conta.nomeInstituicao}</td>
-                                    <td>${conta.agencia}</td>
-                                    <td>${conta.numeroConta}</td>
+                                    <td class="text-start"><c:out value="${conta.nomeInstituicao}"/></td>
+                                    <td><c:out value="${conta.agencia}"/></td>
+                                    <td><c:out value="${conta.numeroConta}"/></td>
                                     <td>${conta.tipoConta}</td>
                                     <td class="text-start">
                                         <fmt:formatNumber

@@ -1,20 +1,25 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
     String fallback = request.getParameter("fallback");
     if (fallback == null || fallback.isBlank()) fallback = "home";
 
     String label = request.getParameter("label");
     if (label == null || label.isBlank()) label = "Voltar";
+
+    request.setAttribute("fallbackValue", fallback);
+    request.setAttribute("labelValue", label);
 %>
 
 <div class="container mt-4">
     <button type="button"
             class="btn btn-link p-0 text-decoration-none d-inline-flex align-items-center gap-2"
             style="color:#1F2A44"
-            onclick="goBackOrFallback('<%= fallback %>')"
-            aria-label="<%= label %>">
+            data-fallback="<c:out value="${fallbackValue}"/>"
+            onclick="goBackOrFallback(this.dataset.fallback)"
+            aria-label="<c:out value="${labelValue}" />">
         <i class="bi bi-arrow-left-circle fs-4 fw-bold"></i>
-        <strong style="font-size:14px;"><%= label %></strong>
+        <strong style="font-size:14px;"><c:out value="${labelValue}" /></strong>
     </button>
 </div>
 

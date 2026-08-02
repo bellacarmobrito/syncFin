@@ -55,23 +55,23 @@
 
                     <div class="mb-3">
                         <label for="id-instituicao"><strong>Instituição Bancária</strong></label><br>
-                        <input type="text" name="instituicao" id="id-nome" class="form-control" required
+                        <input type="text" name="instituicao" id="id-instituicao" class="form-control" required
                                autocomplete="off"
-                               value="${conta.nomeInstituicao}">
+                               value="<c:out value="${conta.nomeInstituicao}"/>">
                     </div>
 
                     <div class="mb-3">
                         <label for="id-agencia"><strong>Agência</strong></label><br>
                         <input type="text" name="agencia" id="id-agencia" class="form-control" required
                                autocomplete="off"
-                               value="${conta.agencia}">
+                               value="<c:out value="${conta.agencia}"/>">
                     </div>
 
                     <div class="mb-3">
                         <label for="id-numero"><strong>Número da Conta</strong></label><br>
                         <input type="text" name="numeroConta" id="id-numero" class="form-control" required
                                autocomplete="off"
-                               value="${conta.numeroConta}">
+                               value="<c:out value="${conta.numeroConta}"/>">
                     </div>
 
                     <div class="mb-3">
@@ -100,7 +100,7 @@
                     <div class="mb-3">
                         <label for="id-saldo"><strong>Saldo</strong></label><br>
                         <input type="number" step="0.01" name="saldo" id="id-saldo" class="form-control"
-                               value="${conta.saldo}">
+                               value="${conta.saldo}" required>
                     </div>
 
                     <div class="d-flex justify-content-center mt-4 gap-2">

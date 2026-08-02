@@ -12,30 +12,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import br.com.fiap.syncfin.util.ValidationUtils;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+
+import static br.com.fiap.syncfin.util.SessionUtils.getClienteLogado;
 
 @WebServlet("/despesa")
 public class DespesaServlet extends HttpServlet {
-
-    private Cadastro getClienteLogado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        HttpSession session = req.getSession(false);
-
-        if (session == null) {
-            resp.sendRedirect("index.jsp");
-            return null;
-        }
-
-        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
-
-        if (cliente == null) {
-            resp.sendRedirect("index.jsp");
-            return null;
-        }
-        return cliente;
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -125,12 +113,38 @@ public class DespesaServlet extends HttpServlet {
             return;
         }
 
+        String categoria = req.getParameter("categoria");
+        String descricao = req.getParameter("descricao");
+        String status = req.getParameter("status");
+
         try (DespesaDao despesaDao = new DespesaDao()) {
-            String categoria = req.getParameter("categoria");
-            String descricao = req.getParameter("descricao");
-            String status = req.getParameter("status");
-            LocalDate vencimento = LocalDate.parse(req.getParameter("vencimento"));
-            double valor = Double.parseDouble(req.getParameter("valor"));
+
+            if (ValidationUtils.algumEmBranco(categoria) || status == null || !Despesa.STATUS_VALIDOS.contains(status)) {
+                req.setAttribute("erro", "Categoria é obrigatória e status deve ser Pendente, Pago ou Vencida.");
+                Despesa atual = despesaDao.pesquisarDespesaPorIdDoCliente(cliente.getIdCliente(), id);
+                req.setAttribute("despesa", atual);
+                req.getRequestDispatcher("editar-despesa.jsp").forward(req, resp);
+                return;
+            }
+
+            double valor;
+            LocalDate vencimento;
+            try {
+                valor = Double.parseDouble(req.getParameter("valor"));
+                vencimento = LocalDate.parse(req.getParameter("vencimento"));
+            } catch (NumberFormatException e) {
+                req.setAttribute("erro", "Valor inválido.");
+                Despesa atual = despesaDao.pesquisarDespesaPorIdDoCliente(cliente.getIdCliente(), id);
+                req.setAttribute("despesa", atual);
+                req.getRequestDispatcher("editar-despesa.jsp").forward(req, resp);
+                return;
+            } catch (DateTimeParseException e) {
+                req.setAttribute("erro", "Data de vencimento inválida.");
+                Despesa atual = despesaDao.pesquisarDespesaPorIdDoCliente(cliente.getIdCliente(), id);
+                req.setAttribute("despesa", atual);
+                req.getRequestDispatcher("editar-despesa.jsp").forward(req, resp);
+                return;
+            }
 
             if (valor <= 0) {
                 req.setAttribute("erro", "O valor da despesa deve ser maior que zero.");
@@ -155,9 +169,9 @@ public class DespesaServlet extends HttpServlet {
 
         } catch (EntidadeNaoEncontradaException e) {
             req.setAttribute("erro", e.getMessage());
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            req.setAttribute("erro", "Erro ao atualizar despesa.");
+            req.setAttribute("erro", "Erro ao atualizar despesa. Tente novamente.");
         }
 
         req.getRequestDispatcher("editar-despesa.jsp").forward(req, resp);
@@ -176,35 +190,54 @@ public class DespesaServlet extends HttpServlet {
             return;
         }
 
+        String categoria = req.getParameter("categoria");
+        String descricao = req.getParameter("descricao");
+        String status = req.getParameter("status");
+
+        if (ValidationUtils.algumEmBranco(categoria) || status == null || !Despesa.STATUS_VALIDOS.contains(status)) {
+            req.setAttribute("erro", "Categoria é obrigatória e status deve ser Pendente, Pago ou Vencida.");
+            req.getRequestDispatcher("cadastro-despesa.jsp").forward(req, resp);
+            return;
+        }
+
+        double valor;
+        LocalDate vencimento;
+        try {
+            valor = Double.parseDouble(req.getParameter("valor"));
+            vencimento = LocalDate.parse(req.getParameter("vencimento"));
+        } catch (NumberFormatException e) {
+            req.setAttribute("erro", "Valor inválido.");
+            req.getRequestDispatcher("cadastro-despesa.jsp").forward(req, resp);
+            return;
+        } catch (DateTimeParseException e) {
+            req.setAttribute("erro", "Data de vencimento inválida.");
+            req.getRequestDispatcher("cadastro-despesa.jsp").forward(req, resp);
+            return;
+        }
+
+        if (valor <= 0) {
+            req.setAttribute("erro", "Valor da despesa deve ser maior que zero.");
+            req.getRequestDispatcher("cadastro-despesa.jsp").forward(req, resp);
+            return;
+        }
+
+        conta.setCliente(cliente);
+
+        Despesa despesa = new Despesa();
+        despesa.setContaBancaria(conta);
+        despesa.setValor(valor);
+        despesa.setCategoria(categoria);
+        despesa.setVencimento(vencimento);
+        despesa.setDescricao(descricao);
+        despesa.setStatus(status);
+
         try (DespesaDao despesaDao = new DespesaDao()) {
-            double valor = Double.parseDouble(req.getParameter("valor"));
-            String categoria = req.getParameter("categoria");
-            LocalDate vencimento = LocalDate.parse(req.getParameter("vencimento"));
-            String descricao = req.getParameter("descricao");
-            String status = req.getParameter("status");
-
-            if (valor <= 0) {
-                req.setAttribute("erro", "Valor da despesa deve ser maior que zero.");
-                req.getRequestDispatcher("cadastro-despesa.jsp").forward(req, resp);
-                return;
-            }
-
-            conta.setCliente(cliente);
-
-            Despesa despesa = new Despesa();
-            despesa.setContaBancaria(conta);
-            despesa.setValor(valor);
-            despesa.setCategoria(categoria);
-            despesa.setVencimento(vencimento);
-            despesa.setDescricao(descricao);
-            despesa.setStatus(status);
-
-            despesaDao.cadastrarDespesa(despesa);
+            despesa.setId(despesaDao.cadastrarDespesa(despesa));
             req.setAttribute("mensagem", "Despesa cadastrada com sucesso!");
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            req.setAttribute("erro", "Erro ao cadastrar despesa");
+            req.setAttribute("erro", "Erro ao cadastrar despesa. Tente novamente.");
         }
         req.getRequestDispatcher("cadastro-despesa.jsp").forward(req, resp);
     }
@@ -227,12 +260,12 @@ public class DespesaServlet extends HttpServlet {
 
         try (DespesaDao despesaDao = new DespesaDao()) {
 
-            Despesa despesa = despesaDao.pesquisarDespesaPorIdDoCliente(idDespesa, cliente.getIdCliente());
+            Despesa despesa = despesaDao.pesquisarDespesaPorIdDoCliente(cliente.getIdCliente(), idDespesa);
 
             if ("Pago".equalsIgnoreCase(despesa.getStatus())) {
                 req.setAttribute("erro", "Despesas com status 'Pago' não podem ser excluídas.");
             } else {
-                despesaDao.deletarDespesaDoCliente(cliente.getIdCliente(), idDespesa);
+                despesaDao.deletarDespesaDoCliente(idDespesa, cliente.getIdCliente());
                 req.setAttribute("mensagem", "Despesa excluída com sucesso!");
             }
 

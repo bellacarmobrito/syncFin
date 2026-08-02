@@ -14,26 +14,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import static br.com.fiap.syncfin.util.SessionUtils.getClienteLogado;
+
 @WebServlet("/conta-bancaria")
 public class ContaBancariaServlet extends HttpServlet {
-
-    private Cadastro getClienteLogado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        HttpSession session = req.getSession(false);
-
-        if (session == null) {
-            resp.sendRedirect("index.jsp");
-            return null;
-        }
-
-        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
-
-        if (cliente == null) {
-            resp.sendRedirect("index.jsp");
-            return null;
-        }
-        return cliente;
-    }
-
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String acao = req.getParameter("acao");
@@ -132,22 +116,24 @@ public class ContaBancariaServlet extends HttpServlet {
             return;
         }
 
+        ContaBancaria conta = new ContaBancaria();
+        conta.setIdConta(idConta);
+        conta.setCliente(cliente);
+        conta.setNomeInstituicao(req.getParameter("instituicao"));
+        conta.setAgencia(req.getParameter("agencia"));
+        conta.setNumeroConta(req.getParameter("numeroConta"));
+        conta.setTipoConta(req.getParameter("tipoConta"));
+
+        try {
+            conta.setSaldo(Double.parseDouble(req.getParameter("saldo")));
+        } catch (NumberFormatException e) {
+            req.setAttribute("erro", "Saldo inválido.");
+            req.setAttribute("conta", conta);
+            req.getRequestDispatcher("editar-conta.jsp").forward(req, resp);
+            return;
+        }
+
         try (ContaBancariaDao dao = new ContaBancariaDao()) {
-
-            String instituicao = req.getParameter("instituicao");
-            String agencia = req.getParameter("agencia");
-            String numeroConta = req.getParameter("numeroConta");
-            String tipo = req.getParameter("tipoConta");
-            double saldo = Double.parseDouble(req.getParameter("saldo"));
-
-            ContaBancaria conta = new ContaBancaria();
-            conta.setIdConta(idConta);
-            conta.setCliente(cliente);
-            conta.setNomeInstituicao(instituicao);
-            conta.setAgencia(agencia);
-            conta.setNumeroConta(numeroConta);
-            conta.setTipoConta(tipo);
-            conta.setSaldo(saldo);
 
             dao.atualizarContaDoCliente(conta, cliente.getIdCliente());
 
@@ -160,15 +146,15 @@ public class ContaBancariaServlet extends HttpServlet {
                 }
             }
 
-            req.setAttribute("conta", conta);
             req.setAttribute("mensagem", "Conta atualizada com sucesso!");
-            req.getRequestDispatcher("editar-conta.jsp").forward(req, resp);
 
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao atualizar conta");
-            req.getRequestDispatcher("editar-conta.jsp").forward(req, resp);
         }
+
+        req.setAttribute("conta", conta);
+        req.getRequestDispatcher("editar-conta.jsp").forward(req, resp);
     }
 
     private void excluirConta(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

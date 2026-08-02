@@ -87,7 +87,7 @@
                     <div class="mb-3">
                         <label for="descricao"><strong>Descrição</strong></label><br>
                         <input type="text" name="descricao" id="descricao" class="form-control"
-                               value="${despesa.descricao}">
+                               value="<c:out value="${despesa.descricao}"/>">
                     </div>
 
                     <div class="mb-3">

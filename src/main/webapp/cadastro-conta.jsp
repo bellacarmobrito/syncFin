@@ -54,7 +54,7 @@
                     <input type="hidden" name="acao" value="cadastrar">
                     <div class="mb-3">
                         <label for="id-instituicao"><strong>Instituição Bancária</strong></label><br>
-                        <input type="text" name="instituicao" id="id-nome" class="form-control" required
+                        <input type="text" name="instituicao" id="id-instituicao" class="form-control" required
                                autocomplete="off">
                     </div>
 
@@ -85,7 +85,7 @@
 
                     <div class="mb-3">
                         <label for="id-saldo"><strong>Saldo</strong></label><br>
-                        <input type="number" step="0.01" name="saldo" id="id-saldo" class="form-control">
+                        <input type="number" step="0.01" name="saldo" id="id-saldo" class="form-control" required>
                     </div>
 
                     <div class="d-flex justify-content-center mt-4">

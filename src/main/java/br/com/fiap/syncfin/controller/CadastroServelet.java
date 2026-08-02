@@ -3,6 +3,7 @@ package br.com.fiap.syncfin.controller;
 import br.com.fiap.syncfin.dao.CadastroDao;
 import br.com.fiap.syncfin.exception.EntidadeNaoEncontradaException;
 import br.com.fiap.syncfin.model.Cadastro;
+import br.com.fiap.syncfin.util.CpfUtils;
 import br.com.fiap.syncfin.util.CriptografiaUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,26 +14,38 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet("/cadastro")
 public class CadastroServelet extends HttpServlet {
+
+    private Cadastro getClienteLogado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+
+        if (session == null) {
+            resp.sendRedirect("index.jsp");
+            return null;
+        }
+
+        Cadastro cliente = (Cadastro) session.getAttribute("cliente");
+
+        if (cliente == null) {
+            resp.sendRedirect("index.jsp");
+            return null;
+        }
+        return cliente;
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String acao = req.getParameter("acao");
 
-        switch (acao) {
-            case "cadastrar":
-                cadastrar(req, resp);
-                break;
-            case "editar":
-                editar(req, resp);
-                break;
-            case "excluir":
-                excluir(req, resp);
-
+        if ("cadastrar".equals(acao)) {
+            cadastrar(req, resp);
+        } else if ("editar".equals(acao)) {
+            editar(req, resp);
+        } else if ("excluir".equals(acao)) {
+            excluir(req, resp);
         }
     }
 
@@ -42,11 +55,16 @@ public class CadastroServelet extends HttpServlet {
         String cpf = req.getParameter("cpf");
         String email = req.getParameter("email");
         String senha = req.getParameter("senha");
-        String status = req.getParameter("status");
+
+        if (!CpfUtils.isCpfValido(cpf)) {
+            req.setAttribute("erro", "CPF inválido.");
+            req.getRequestDispatcher("cadastro-cliente.jsp").forward(req, resp);
+            return;
+        }
 
         senha = CriptografiaUtils.criptografar(senha);
 
-        Cadastro cadastro = new Cadastro(nomeCliente, telefone, cpf, email, senha, status);
+        Cadastro cadastro = new Cadastro(nomeCliente, telefone, cpf, email, senha, null);
 
         try (CadastroDao dao = new CadastroDao()) {
             dao.cadastrar(cadastro);
@@ -60,13 +78,39 @@ public class CadastroServelet extends HttpServlet {
 
     public void editar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try (CadastroDao dao = new CadastroDao()) {
+        Cadastro clienteLogado = getClienteLogado(req, resp);
+        if (clienteLogado == null) return;
 
-            int idCliente = Integer.parseInt(req.getParameter("codigo"));
+        int idCliente;
+        try {
+            idCliente = Integer.parseInt(req.getParameter("codigo"));
+        } catch (NumberFormatException e) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "Cadastro inválido.");
+            resp.sendRedirect("home");
+            return;
+        }
+
+        if (idCliente != clienteLogado.getIdCliente()) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "Cadastro não localizado ou acesso negado.");
+            resp.sendRedirect("home");
+            return;
+        }
+
+        String cpf = req.getParameter("cpf");
+
+        if (!CpfUtils.isCpfValido(cpf)) {
+            req.setAttribute("erro", "CPF inválido.");
+            req.setAttribute("cadastro", clienteLogado);
+            req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
+            return;
+        }
+
+        try (CadastroDao dao = new CadastroDao()) {
 
             String nomeCliente = req.getParameter("nomeCliente");
             String telefone = req.getParameter("telefone");
-            String cpf = req.getParameter("cpf");
             String email = req.getParameter("email");
             String senha = req.getParameter("senha");
 
@@ -94,12 +138,31 @@ public class CadastroServelet extends HttpServlet {
             e.printStackTrace();
             req.setAttribute("erro", "Erro ao atualizar");
             req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
+        } catch (EntidadeNaoEncontradaException e) {
+            req.setAttribute("erro", e.getMessage());
+            req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
         }
     }
 
     private void excluir(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        int codigo = Integer.parseInt(req.getParameter("codigoExcluir"));
+        Cadastro clienteLogado = getClienteLogado(req, resp);
+        if (clienteLogado == null) return;
+
+        int codigo;
+        try {
+            codigo = Integer.parseInt(req.getParameter("codigoExcluir"));
+        } catch (NumberFormatException e) {
+            req.setAttribute("erro", "Cadastro inválido.");
+            listar(req, resp);
+            return;
+        }
+
+        if (codigo != clienteLogado.getIdCliente()) {
+            req.setAttribute("erro", "Cadastro não localizado ou acesso negado.");
+            listar(req, resp);
+            return;
+        }
 
         try (CadastroDao dao = new CadastroDao()) {
             dao.inativarCadastro(codigo);
@@ -117,21 +180,36 @@ public class CadastroServelet extends HttpServlet {
 
         String acao = req.getParameter("acao");
 
-        switch (acao) {
-            case "listar":
-                listar(req, resp);
-                break;
-            case "abrir-form-edicao":
-                abrirForm(req, resp);
-                break;
+        if ("listar".equals(acao)) {
+            listar(req, resp);
+        } else if ("abrir-form-edicao".equals(acao)) {
+            abrirForm(req, resp);
         }
     }
 
     private void abrirForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        try (CadastroDao dao = new CadastroDao()) {
+        Cadastro clienteLogado = getClienteLogado(req, resp);
+        if (clienteLogado == null) return;
 
-            int id = Integer.parseInt(req.getParameter("codigo"));
+        int id;
+        try {
+            id = Integer.parseInt(req.getParameter("codigo"));
+        } catch (NumberFormatException e) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "Cadastro inválido.");
+            resp.sendRedirect("home");
+            return;
+        }
+
+        if (id != clienteLogado.getIdCliente()) {
+            HttpSession session = req.getSession(false);
+            if (session != null) session.setAttribute("erro", "Cadastro não localizado ou acesso negado.");
+            resp.sendRedirect("home");
+            return;
+        }
+
+        try (CadastroDao dao = new CadastroDao()) {
             Cadastro cadastro = dao.pesquisar(id);
             req.setAttribute("cadastro", cadastro);
             req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
@@ -143,14 +221,10 @@ public class CadastroServelet extends HttpServlet {
     }
 
     private void listar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Cadastro> clientes;
 
-        try (CadastroDao dao = new CadastroDao()) {
-            clientes = dao.getAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        req.setAttribute("clientes", clientes);
+        Cadastro clienteLogado = getClienteLogado(req, resp);
+        if (clienteLogado == null) return;
+
         req.getRequestDispatcher("visualizar-cadastro.jsp").forward(req, resp);
     }
 }

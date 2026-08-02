@@ -46,9 +46,10 @@ public class InvestimentoDao extends BaseDao {
     }
 
 
-    public void cadastrarInvestimento(Investimento investimento) throws SQLException {
+    public int cadastrarInvestimento(Investimento investimento) throws SQLException {
 
-        String sql = "INSERT INTO T_INVESTIMENTO (ID_CLIENTE, ID_CONTA, TIPO_INVESTIMENTO, VL_INVESTIMENTO, DT_INVESTIMENTO, RECORRENCIA, ST_INVESTIMENTO, RENDIMENTO, DT_VENCIMENTO) VALUES (?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO T_INVESTIMENTO (ID_CLIENTE, ID_CONTA, TIPO_INVESTIMENTO, VL_INVESTIMENTO, DT_INVESTIMENTO, RECORRENCIA, ST_INVESTIMENTO, RENDIMENTO, DT_VENCIMENTO) " +
+                "VALUES (?,?,?,?,?,?,?,?,?) RETURNING ID_INVESTIMENTO";
 
         try (PreparedStatement stm = conexao.prepareStatement(sql)) {
             stm.setInt(1, investimento.getContaBancaria().getCliente().getIdCliente());
@@ -65,7 +66,13 @@ public class InvestimentoDao extends BaseDao {
             } else {
                 stm.setNull(9, Types.DATE);
             }
-            stm.executeUpdate();
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Não foi possível gerar ID do investimento.");
+                }
+                return rs.getInt(1);
+            }
         }
     }
 

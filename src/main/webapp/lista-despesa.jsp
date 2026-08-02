@@ -18,7 +18,7 @@
 <%@include file="header.jsp" %>
 
 <jsp:include page="back-button.jsp">
-    <jsp:param name="fallback" value="receita?acao=listar"/>
+    <jsp:param name="fallback" value="despesa?acao=listar"/>
     <jsp:param name="label" value="Voltar"/>
 </jsp:include>
 
@@ -61,7 +61,7 @@
                             <c:forEach items="${despesas}" var="despesa">
                                 <tr>
                                     <td class="text-start">${despesa.categoria}</td>
-                                    <td>${despesa.descricao}</td>
+                                    <td><c:out value="${despesa.descricao}"/></td>
                                     <td class="text-start">
                                         <fmt:formatNumber
                                                 value="${despesa.valor}"

@@ -30,15 +30,6 @@ public abstract class Conta {
         }
     }
 
-    public void sacar(double valor){
-        if (valor > 0 && valor <= saldo) {
-            saldo -= valor;
-            System.out.println("Saque no valor de R$ " + valor + " realizado com sucesso!");
-        } else {
-            System.out.println("Saldo insuficiente para saque.");
-        }
-    }
-
     public String getNomeInstituicao() {
         return nomeInstituicao;
     }
@@ -68,10 +59,10 @@ public abstract class Conta {
     }
 
     public void setSaldo(double saldo) {
-        if (saldo > 0) {
+        if (saldo >= 0) {
             this.saldo = saldo;
         } else {
-            System.out.println("Por favor informe um valor positivo.");
+            System.out.println("Por favor informe um valor não negativo.");
         }
     }
 

@@ -28,34 +28,24 @@ public class CadastroDao extends BaseDao {
 
     public int cadastrar(Cadastro cadastro) throws SQLException {
 
-        int idGerado = -1;
-
-        try (Statement stmtSeq = conexao.createStatement();
-             ResultSet rs = stmtSeq.executeQuery("SELECT SEQ_T_CLIENTE.NEXTVAL FROM DUAL")) {
-
-            if (rs.next()) {
-                idGerado = rs.getInt(1);
-            }
-        }
-
-        if (idGerado == -1) {
-            throw new SQLException("Não foi possível gerar ID do cliente.");
-        }
-
-        String sql = "INSERT INTO T_CLIENTE (ID_CLIENTE, NM_CLIENTE, NR_CELULAR, NR_CPF, EMAIL, SENHA, ST_CONTA) " +
-                "VALUES (?, ?,?,?,?,?,?)";
+        String sql = "INSERT INTO T_CLIENTE (NM_CLIENTE, NR_CELULAR, NR_CPF, EMAIL, SENHA, ST_CONTA) " +
+                "VALUES (?,?,?,?,?,?) RETURNING ID_CLIENTE";
 
         try (PreparedStatement stm = conexao.prepareStatement(sql)) {
-            stm.setInt(1, idGerado);
-            stm.setString(2, cadastro.getNomeCliente());
-            stm.setString(3, cadastro.getCelular());
-            stm.setString(4, cadastro.getCpf());
-            stm.setString(5, cadastro.getEmail());
-            stm.setString(6, cadastro.getSenha());
-            stm.setString(7, cadastro.isStatusConta() ? "Ativa" : "Inativa");
-            stm.executeUpdate();
+            stm.setString(1, cadastro.getNomeCliente());
+            stm.setString(2, cadastro.getCelular());
+            stm.setString(3, cadastro.getCpf());
+            stm.setString(4, cadastro.getEmail());
+            stm.setString(5, cadastro.getSenha());
+            stm.setString(6, cadastro.isStatusConta() ? "Ativa" : "Inativa");
+
+            try (ResultSet rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Não foi possível gerar ID do cliente.");
+                }
+                return rs.getInt(1);
+            }
         }
-        return idGerado;
     }
 
     public Cadastro pesquisar(int id) throws SQLException, EntidadeNaoEncontradaException {
@@ -88,7 +78,7 @@ public class CadastroDao extends BaseDao {
         return lista;
     }
 
-    public void atualizar(Cadastro cadastro) throws SQLException {
+    public void atualizar(Cadastro cadastro) throws SQLException, EntidadeNaoEncontradaException {
 
         String sql = "UPDATE T_CLIENTE SET NM_CLIENTE = ?, NR_CELULAR = ?, NR_CPF = ?, EMAIL = ?, SENHA = ? WHERE ID_CLIENTE = ?";
 
@@ -99,11 +89,15 @@ public class CadastroDao extends BaseDao {
             stm.setString(4, cadastro.getEmail());
             stm.setString(5, cadastro.getSenha());
             stm.setInt(6, cadastro.getIdCliente());
-            stm.executeUpdate();
+
+            int linhas = stm.executeUpdate();
+            if (linhas == 0) {
+                throw new EntidadeNaoEncontradaException("Cliente não localizado.");
+            }
         }
     }
 
-    public void atualizarSemSenha(Cadastro cadastro) throws SQLException {
+    public void atualizarSemSenha(Cadastro cadastro) throws SQLException, EntidadeNaoEncontradaException {
 
         String sql = "UPDATE T_CLIENTE SET NM_CLIENTE = ?, NR_CELULAR = ?, NR_CPF = ?, EMAIL = ? WHERE ID_CLIENTE = ?";
 
@@ -113,7 +107,11 @@ public class CadastroDao extends BaseDao {
             stm.setString(3, cadastro.getCpf());
             stm.setString(4, cadastro.getEmail());
             stm.setInt(5, cadastro.getIdCliente());
-            stm.executeUpdate();
+
+            int linhas = stm.executeUpdate();
+            if (linhas == 0) {
+                throw new EntidadeNaoEncontradaException("Cliente não localizado.");
+            }
         }
     }
 

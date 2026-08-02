@@ -49,29 +49,29 @@
                     <div class="mb-3">
                         <label for="id-nome"><strong>Nome</strong></label><br>
                         <input type="text" name="nomeCliente" id="id-nome" class="form-control"
-                               value="${cadastro.nomeCliente}">
+                               value="<c:out value="${cadastro.nomeCliente}"/>" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-telefone"><strong>Telefone</strong></label><br>
                         <input type="text" name="telefone" id="id-telefone" class="form-control"
-                               value="${cadastro.celular}">
+                               value="<c:out value="${cadastro.celular}"/>" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-cpf"><strong>CPF</strong></label><br>
-                        <input type="text" name="cpf" id="id-cpf" class="form-control" value="${cadastro.cpf}">
+                        <input type="text" name="cpf" id="id-cpf" class="form-control" value="<c:out value="${cadastro.cpf}"/>" required>
                     </div>
                     <div class="mb-3">
                         <label for="id-email"><strong>E-mail</strong></label><br>
-                        <input type="text" name="email" id="id-email" class="form-control" value="${cadastro.email}">
+                        <input type="text" name="email" id="id-email" class="form-control" value="<c:out value="${cadastro.email}"/>" required>
                     </div>
                     <div class="mb-3">
-                        <label for="id-cpf"><strong>Senha</strong></label><br>
+                        <label for="id-senha"><strong>Senha</strong></label><br>
                         <input type="password" name="senha" id="id-senha" class="form-control">
                     </div>
 
                     <div class="d-flex justify-content-center mt-4 gap-2">
                         <button type="submit" value="Salvar" class="btn btn-primary">Salvar</button>
-                        <button href="visualizar-cadastro.jsp" class="btn btn-secondary fw-bold">Cancelar</button>
+                        <button type="button" href="visualizar-cadastro.jsp" class="btn btn-secondary fw-bold">Cancelar</button>
                     </div>
                 </form>
             </div>

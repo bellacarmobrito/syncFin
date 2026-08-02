@@ -73,86 +73,6 @@ public class Cadastro {
                 '}';
     }
 
-
-    public void exibirCadastro() {
-        System.out.println("Detalhamento do Cadastro");
-        System.out.println("-------------------------------------------");
-        System.out.println("ID: " + getIdCliente());
-        System.out.println("Nome: " + getNomeCliente());
-        System.out.println("Endereço: " + endereco.getEnderecoCompleto());
-        System.out.println("Celular: " + getCelular());
-        System.out.println("CPF: " + getCpf());
-        System.out.println("E-mail: " + getEmail());
-        System.out.println("Data de Cadastro: " + getDataCadastro());
-        System.out.println("Status da Conta: " + isStatusConta());
-    }
-
-    public void atualizarNome(String novoNome) {
-        if (novoNome != null && !novoNome.isEmpty()) {
-            this.nomeCliente = novoNome;
-            System.out.println("Nome atualizado com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar seu nome.");
-        }
-
-    }
-
-    public void atualizarEndereco(Endereco novoEndereco) {
-        if (novoEndereco != null) {
-            this.endereco = novoEndereco;
-            System.out.println("Endereço atualizado com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar seu endereço.");
-        }
-    }
-
-    public void atualizarCpf(String novoCpf) {
-        if (novoCpf != null && !novoCpf.isEmpty()) {
-            this.cpf = novoCpf;
-            System.out.println("CPF atualizado com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar seu CPF.");
-        }
-    }
-
-    public void atualizarCelular(String novoCelular) {
-        if (novoCelular != null && !novoCelular.isEmpty()) {
-            this.celular = novoCelular;
-            System.out.println("Celular atualizado com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar seu celular.");
-        }
-    }
-
-    public void atualizarEmail(String novoEmail) {
-        if (novoEmail != null && !novoEmail.isEmpty()) {
-            this.email = novoEmail;
-            System.out.println("E-mail atualizado com sucesso!");
-        } else {
-            System.out.println("Não foi possível atualizar seu e-mail.");
-        }
-    }
-
-    public void atualizarSenha(String novaSenha) {
-        if (novaSenha != null && !novaSenha.isEmpty()) {
-            this.senha = novaSenha;
-            System.out.println("Senha alterada com sucesso!");
-        } else {
-            System.out.println("Não foi possível alterar sua senha.");
-        }
-    }
-
-    public void excluirCadastro() {
-        this.nomeCliente = null;
-        this.endereco = null;
-        this.celular = null;
-        this.cpf = null;
-        this.email = null;
-        this.senha = null;
-        this.statusConta = "Inativa";
-        System.out.println("Cadastro excluído com sucesso!");
-    }
-
     public int getIdCliente() {
         return idCliente;
     }
@@ -167,14 +87,6 @@ public class Cadastro {
 
     public void setNomeCliente(String nomeCliente) {
         this.nomeCliente = nomeCliente;
-    }
-
-    public Endereco getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
     }
 
     public String getCelular() {
@@ -209,14 +121,6 @@ public class Cadastro {
         this.senha = senha;
     }
 
-    public LocalDateTime getDataCadastro() {
-        return dataCadastro;
-    }
-
-    public void setDataCadastro(LocalDateTime dataCadastro) {
-        this.dataCadastro = dataCadastro;
-    }
-
     public Boolean isStatusConta() {
 
         if (statusConta != null && statusConta.equalsIgnoreCase("Ativa")) {
@@ -224,14 +128,5 @@ public class Cadastro {
         }
         return false;
     }
-
-    public void setStatusConta(String statusConta) {
-        this.statusConta = statusConta;
-    }
-
-    public String getStatusConta() {
-        return statusConta;
-    }
-
 
 }
