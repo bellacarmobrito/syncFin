@@ -53,6 +53,19 @@
                         <input type="email" class="form-control" value="<c:out value="${cliente.email}"/>" readonly>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Endereço</strong></label><br>
+                        <c:choose>
+                            <c:when test="${empty cliente.endereco}">
+                                <input type="text" class="form-control" value="Não informado" readonly>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="text" class="form-control" readonly
+                                       value="<c:out value="${cliente.endereco.logradouro}"/>, <c:out value="${cliente.endereco.numero}"/> - <c:out value="${cliente.endereco.bairro}"/>, <c:out value="${cliente.endereco.cidade}"/>/<c:out value="${cliente.endereco.estado}"/> - CEP <c:out value="${cliente.endereco.cep}"/>">
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+
                     <div class="text-center mt-4">
                         <a href="cadastro?acao=abrir-form-edicao&codigo=${cliente.idCliente}" class="btn fw-bold"
                            style="background-color: #1F2A44; color: white; font-size: 15px;">

@@ -121,6 +121,14 @@ public class Cadastro {
         this.senha = senha;
     }
 
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
     public Boolean isStatusConta() {
 
         if (statusConta != null && statusConta.equalsIgnoreCase("Ativa")) {
