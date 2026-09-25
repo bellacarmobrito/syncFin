@@ -63,6 +63,33 @@
                         <input type="password" name="senha" id="id-senha" class="form-control" autocomplete="off" required>
                     </div>
 
+                    <p class="text-muted mb-3">Endereço (opcional) — preencha o CEP para completar automaticamente</p>
+
+                    <div class="mb-3">
+                        <label for="id-cep"><strong>CEP</strong></label><br>
+                        <input type="text" name="cep" id="id-cep" class="form-control" autocomplete="off" maxlength="9" placeholder="00000-000">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id-logradouro"><strong>Logradouro</strong></label><br>
+                        <input type="text" name="logradouro" id="id-logradouro" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id-numero"><strong>Número</strong></label><br>
+                        <input type="number" name="numero" id="id-numero" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id-bairro"><strong>Bairro</strong></label><br>
+                        <input type="text" name="bairro" id="id-bairro" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id-cidade"><strong>Cidade</strong></label><br>
+                        <input type="text" name="cidade" id="id-cidade" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id-estado"><strong>Estado (UF)</strong></label><br>
+                        <input type="text" name="estado" id="id-estado" class="form-control" autocomplete="off" maxlength="2">
+                    </div>
+
                     <div class="d-flex justify-content-center">
                         <input type="submit" value="Cadastrar" class="btn btn-primary w-auto">
                     </div>
@@ -73,5 +100,6 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script src="resources/js/viacep.js"></script>
 </body>
 </html>

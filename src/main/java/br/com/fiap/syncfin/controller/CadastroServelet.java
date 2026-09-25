@@ -1,10 +1,13 @@
 package br.com.fiap.syncfin.controller;
 
 import br.com.fiap.syncfin.dao.CadastroDao;
+import br.com.fiap.syncfin.dao.EnderecoDao;
 import br.com.fiap.syncfin.exception.EntidadeNaoEncontradaException;
 import br.com.fiap.syncfin.model.Cadastro;
+import br.com.fiap.syncfin.model.Endereco;
 import br.com.fiap.syncfin.util.CpfUtils;
 import br.com.fiap.syncfin.util.CriptografiaUtils;
+import br.com.fiap.syncfin.util.ValidationUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -62,12 +65,43 @@ public class CadastroServelet extends HttpServlet {
             return;
         }
 
+        String cep = req.getParameter("cep");
+        String logradouro = req.getParameter("logradouro");
+        String bairro = req.getParameter("bairro");
+        String cidade = req.getParameter("cidade");
+        String estado = req.getParameter("estado");
+        boolean informouEndereco = cep != null && !cep.isBlank();
+        int numero = 0;
+
+        if (informouEndereco) {
+            if (ValidationUtils.algumEmBranco(logradouro, bairro, cidade, estado)) {
+                req.setAttribute("erro", "Preencha todos os campos de endereço, ou deixe o CEP em branco para pular.");
+                req.getRequestDispatcher("cadastro-cliente.jsp").forward(req, resp);
+                return;
+            }
+            try {
+                numero = Integer.parseInt(req.getParameter("numero"));
+            } catch (NumberFormatException e) {
+                req.setAttribute("erro", "Número do endereço inválido.");
+                req.getRequestDispatcher("cadastro-cliente.jsp").forward(req, resp);
+                return;
+            }
+        }
+
         senha = CriptografiaUtils.criptografar(senha);
 
         Cadastro cadastro = new Cadastro(nomeCliente, telefone, cpf, email, senha, null);
 
         try (CadastroDao dao = new CadastroDao()) {
-            dao.cadastrar(cadastro);
+            int idCliente = dao.cadastrar(cadastro);
+
+            if (informouEndereco) {
+                Endereco endereco = new Endereco(idCliente, logradouro, numero, bairro, cep, cidade, estado);
+                try (EnderecoDao enderecoDao = new EnderecoDao()) {
+                    enderecoDao.salvar(endereco);
+                }
+            }
+
             req.setAttribute("mensagem", "Cadastro realizado com sucesso!");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -107,6 +141,32 @@ public class CadastroServelet extends HttpServlet {
             return;
         }
 
+        String cep = req.getParameter("cep");
+        String logradouro = req.getParameter("logradouro");
+        String bairro = req.getParameter("bairro");
+        String cidade = req.getParameter("cidade");
+        String estado = req.getParameter("estado");
+        String numeroTexto = req.getParameter("numero");
+        boolean enderecoVazio = ValidationUtils.todosEmBranco(cep, logradouro, numeroTexto, bairro, cidade, estado);
+        int numero = 0;
+
+        if (!enderecoVazio) {
+            if (ValidationUtils.algumEmBranco(cep, logradouro, bairro, cidade, estado)) {
+                req.setAttribute("erro", "Preencha todos os campos de endereço, ou deixe todos em branco para remover.");
+                req.setAttribute("cadastro", clienteLogado);
+                req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
+                return;
+            }
+            try {
+                numero = Integer.parseInt(numeroTexto);
+            } catch (NumberFormatException e) {
+                req.setAttribute("erro", "Número do endereço inválido.");
+                req.setAttribute("cadastro", clienteLogado);
+                req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
+                return;
+            }
+        }
+
         try (CadastroDao dao = new CadastroDao()) {
 
             String nomeCliente = req.getParameter("nomeCliente");
@@ -126,6 +186,14 @@ public class CadastroServelet extends HttpServlet {
                 dao.atualizar(cadastro);
             } else {
                 dao.atualizarSemSenha(cadastro);
+            }
+
+            try (EnderecoDao enderecoDao = new EnderecoDao()) {
+                if (enderecoVazio) {
+                    enderecoDao.remover(idCliente);
+                } else {
+                    enderecoDao.salvar(new Endereco(idCliente, logradouro, numero, bairro, cep, cidade, estado));
+                }
             }
 
             HttpSession session = req.getSession();
@@ -209,8 +277,9 @@ public class CadastroServelet extends HttpServlet {
             return;
         }
 
-        try (CadastroDao dao = new CadastroDao()) {
+        try (CadastroDao dao = new CadastroDao(); EnderecoDao enderecoDao = new EnderecoDao()) {
             Cadastro cadastro = dao.pesquisar(id);
+            cadastro.setEndereco(enderecoDao.buscarPorCliente(id));
             req.setAttribute("cadastro", cadastro);
             req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
         } catch (SQLException e) {
@@ -224,6 +293,12 @@ public class CadastroServelet extends HttpServlet {
 
         Cadastro clienteLogado = getClienteLogado(req, resp);
         if (clienteLogado == null) return;
+
+        try (EnderecoDao enderecoDao = new EnderecoDao()) {
+            clienteLogado.setEndereco(enderecoDao.buscarPorCliente(clienteLogado.getIdCliente()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         req.getRequestDispatcher("visualizar-cadastro.jsp").forward(req, resp);
     }
