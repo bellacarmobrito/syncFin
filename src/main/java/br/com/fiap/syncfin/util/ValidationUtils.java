@@ -8,4 +8,11 @@ public class ValidationUtils {
         }
         return false;
     }
+
+    public static boolean todosEmBranco(String... valores) {
+        for (String valor : valores) {
+            if (valor != null && !valor.isBlank()) return false;
+        }
+        return true;
+    }
 }

@@ -146,18 +146,19 @@ public class CadastroServelet extends HttpServlet {
         String bairro = req.getParameter("bairro");
         String cidade = req.getParameter("cidade");
         String estado = req.getParameter("estado");
-        boolean informouEndereco = cep != null && !cep.isBlank();
+        String numeroTexto = req.getParameter("numero");
+        boolean enderecoVazio = ValidationUtils.todosEmBranco(cep, logradouro, numeroTexto, bairro, cidade, estado);
         int numero = 0;
 
-        if (informouEndereco) {
-            if (ValidationUtils.algumEmBranco(logradouro, bairro, cidade, estado)) {
-                req.setAttribute("erro", "Preencha todos os campos de endereço, ou deixe o CEP em branco para pular.");
+        if (!enderecoVazio) {
+            if (ValidationUtils.algumEmBranco(cep, logradouro, bairro, cidade, estado)) {
+                req.setAttribute("erro", "Preencha todos os campos de endereço, ou deixe todos em branco para remover.");
                 req.setAttribute("cadastro", clienteLogado);
                 req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
                 return;
             }
             try {
-                numero = Integer.parseInt(req.getParameter("numero"));
+                numero = Integer.parseInt(numeroTexto);
             } catch (NumberFormatException e) {
                 req.setAttribute("erro", "Número do endereço inválido.");
                 req.setAttribute("cadastro", clienteLogado);
@@ -187,10 +188,11 @@ public class CadastroServelet extends HttpServlet {
                 dao.atualizarSemSenha(cadastro);
             }
 
-            if (informouEndereco) {
-                Endereco endereco = new Endereco(idCliente, logradouro, numero, bairro, cep, cidade, estado);
-                try (EnderecoDao enderecoDao = new EnderecoDao()) {
-                    enderecoDao.salvar(endereco);
+            try (EnderecoDao enderecoDao = new EnderecoDao()) {
+                if (enderecoVazio) {
+                    enderecoDao.remover(idCliente);
+                } else {
+                    enderecoDao.salvar(new Endereco(idCliente, logradouro, numero, bairro, cep, cidade, estado));
                 }
             }
 

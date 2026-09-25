@@ -44,6 +44,16 @@ public class EnderecoDao extends BaseDao {
         }
     }
 
+    public void remover(int idCliente) throws SQLException {
+
+        String sql = "DELETE FROM T_ENDERECO WHERE ID_CLIENTE = ?";
+
+        try (PreparedStatement stm = conexao.prepareStatement(sql)) {
+            stm.setInt(1, idCliente);
+            stm.executeUpdate();
+        }
+    }
+
     public Endereco buscarPorCliente(int idCliente) throws SQLException {
 
         String sql = "SELECT * FROM T_ENDERECO WHERE ID_CLIENTE = ?";

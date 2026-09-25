@@ -2,6 +2,7 @@ package br.com.fiap.syncfin.controller;
 
 import br.com.fiap.syncfin.dao.CadastroDao;
 import br.com.fiap.syncfin.dao.ContaBancariaDao;
+import br.com.fiap.syncfin.dao.EnderecoDao;
 import br.com.fiap.syncfin.exception.EntidadeNaoEncontradaException;
 import br.com.fiap.syncfin.model.ContaBancaria;
 import jakarta.servlet.ServletException;
@@ -32,7 +33,8 @@ public class LoginServlet extends HttpServlet {
         }
 
         try (CadastroDao dao = new CadastroDao();
-             ContaBancariaDao contaDao = new ContaBancariaDao()) {
+             ContaBancariaDao contaDao = new ContaBancariaDao();
+             EnderecoDao enderecoDao = new EnderecoDao()) {
 
             var cliente = dao.autenticarUsuario(email, senha);
 
@@ -41,6 +43,8 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
+
+            cliente.setEndereco(enderecoDao.buscarPorCliente(cliente.getIdCliente()));
 
             HttpSession oldSession = request.getSession(false);
             if (oldSession != null) {

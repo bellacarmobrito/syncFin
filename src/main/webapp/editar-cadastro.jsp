@@ -69,7 +69,7 @@
                         <input type="password" name="senha" id="id-senha" class="form-control">
                     </div>
 
-                    <p class="text-muted mb-3">Endereço (opcional) — preencha o CEP para completar automaticamente</p>
+                    <p class="text-muted mb-3">Endereço (opcional) — preencha o CEP para completar automaticamente, ou deixe todos os campos em branco para remover o endereço</p>
 
                     <div class="mb-3">
                         <label for="id-cep"><strong>CEP</strong></label><br>
