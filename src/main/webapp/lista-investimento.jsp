@@ -37,6 +37,7 @@
                     <div class="alert alert-danger">${erro}</div>
                 </c:if>
 
+                <div data-indicadores="painel"></div>
 
                 <c:choose>
                     <c:when test="${empty investimentos}">
@@ -174,5 +175,6 @@
 
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script type="module" src="resources/js/painel-indicadores.js"></script>
 </body>
 </html>

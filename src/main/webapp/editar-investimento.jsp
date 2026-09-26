@@ -100,6 +100,7 @@
                         <label for="rendimento"><strong>Rendimento</strong></label><br>
                         <input type="number" name="rendimento" step="0.01" min="0.01" id="rendimento"
                                class="form-control" value="${investimento.rendimento}" required>
+                        <div class="form-text" data-indicadores="dica"></div>
                     </div>
 
                     <div class="mb-3">
@@ -151,5 +152,6 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script type="module" src="resources/js/painel-indicadores.js"></script>
 </body>
 </html>
