@@ -97,5 +97,6 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script type="module" src="resources/js/bancos.js"></script>
 </body>
 </html>
