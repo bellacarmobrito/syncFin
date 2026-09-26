@@ -66,7 +66,7 @@
 
                     <div class="mb-3">
                         <label for="dataRecebimento"><strong>Data de Recebimento</strong></label><br>
-                        <input type="date" name="dataRecebimento" id="dataRecebimento" class="form-control" required>
+                        <input type="date" name="dataRecebimento" id="dataRecebimento" class="form-control" data-padrao-hoje required>
                     </div>
 
                     <div class="mb-3">
@@ -99,5 +99,6 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script src="resources/js/data-padrao.js"></script>
 </body>
 </html>

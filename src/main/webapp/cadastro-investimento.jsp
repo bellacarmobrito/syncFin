@@ -69,7 +69,7 @@
 
                     <div class="mb-3">
                         <label for="dataInvestimento"><strong>Data do Investimento</strong></label><br>
-                        <input type="date" name="dataInvestimento" id="dataInvestimento" class="form-control" required>
+                        <input type="date" name="dataInvestimento" id="dataInvestimento" class="form-control" data-padrao-hoje required>
                     </div>
 
                     <div class="mb-3">
@@ -121,6 +121,7 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script src="resources/js/data-padrao.js"></script>
 <script type="module" src="resources/js/painel-indicadores.js"></script>
 </body>
 </html>
