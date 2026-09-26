@@ -60,7 +60,13 @@
                             <tbody>
                             <c:forEach items="${contas}" var="conta">
                                 <tr>
-                                    <td class="text-start"><c:out value="${conta.nomeInstituicao}"/></td>
+                                    <td class="text-start">
+                                        <span class="d-inline-flex align-items-center gap-2">
+                                            <span data-banco="<c:out value="${conta.nomeInstituicao}"/>"></span>
+                                            <c:out value="${conta.nomeInstituicao}"/>
+                                        </span>
+                                    </td>
+
                                     <td><c:out value="${conta.agencia}"/></td>
                                     <td><c:out value="${conta.numeroConta}"/></td>
                                     <td>${conta.tipoConta}</td>
@@ -155,5 +161,6 @@
 
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script type="module" src="resources/js/logos-bancos.js"></script>
 </body>
 </html>

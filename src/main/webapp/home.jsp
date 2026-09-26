@@ -67,11 +67,15 @@
                                         <ul class="list-group list-group-flush">
                                             <c:forEach items="${contas}" var="conta">
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <strong><c:out value="${conta.nomeInstituicao}"/></strong><br>
-                                                        <p> Agência <c:out value="${conta.agencia}"/>, Conta <c:out value="${conta.numeroConta}"/>
-                                                            (${conta.tipoConta})</p>
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <span data-banco="<c:out value="${conta.nomeInstituicao}"/>"></span>
+                                                        <div>
+                                                            <strong><c:out value="${conta.nomeInstituicao}"/></strong><br>
+                                                            <p> Agência <c:out value="${conta.agencia}"/>, Conta <c:out value="${conta.numeroConta}"/>
+                                                                (${conta.tipoConta})</p>
+                                                        </div>
                                                     </div>
+
                                                     <span class="badge text-white fw-light"
                                                           style="background-color: #1F2A44">
                                         <fmt:formatNumber value="${conta.saldo}" type="currency" currencySymbol="R$"/>
@@ -145,6 +149,7 @@
 
 </script>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script type="module" src="resources/js/logos-bancos.js"></script>
 
 </body>
 </html>
