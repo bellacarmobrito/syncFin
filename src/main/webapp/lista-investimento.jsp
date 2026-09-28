@@ -56,7 +56,7 @@
                                 <th class="text-start">Data do Investimento</th>
                                 <th class="text-start">Data de Vencimento</th>
                                 <th class="text-start">Valor do Investimento</th>
-                                <th class="text-start">Rendimento</th>
+                                <th class="text-start">Rendimento ao ano</th>
                                 <th class="text-start">Recorrência</th>
                                 <th class="text-start">Status</th>
                             </tr>
@@ -89,7 +89,10 @@
                                         />
                                     </td>
 
-                                    <td>${investimento.rendimento}</td>
+                                    <td>
+                                        <fmt:formatNumber value="${investimento.rendimento}" minFractionDigits="2" maxFractionDigits="2"/>%
+                                    </td>
+
                                     <td>${investimento.recorrencia}</td>
                                     <td class="text-start">${investimento.status}</td>
                                     <td class="text-center">

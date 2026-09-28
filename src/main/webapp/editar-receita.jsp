@@ -93,8 +93,12 @@
 
                     <div class="mb-3">
                         <label for="valor"><strong>Valor da Receita</strong></label><br>
-                        <input type="number" name="valor" step="0.01" min="0.01" id="valor" class="form-control"
-                               required value="${receita.valor}">
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="number" name="valor" step="0.01" min="0.01" id="valor" class="form-control" data-duas-casas
+                                   required value="${receita.valor}">
+                        </div>
+
                     </div>
 
 
@@ -108,5 +112,6 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script src="resources/js/duas-casas.js"></script>
 </body>
 </html>

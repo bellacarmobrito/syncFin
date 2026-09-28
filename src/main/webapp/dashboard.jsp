@@ -125,7 +125,10 @@
                                         <div>
                                             <div class="fw-semibold">${i.tipoInvestimento}</div>
                                             <small class="text-muted">
-                                                Rendimento: ${i.rendimento}
+                                                Rendimento:
+                                                    <fmt:formatNumber value="${i.rendimento}"
+                                                            minFractionDigits="2" maxFractionDigits="2"
+                                                    />% a.a.
                                             </small><br>
 
                                             <small class="text-muted">
