@@ -147,7 +147,7 @@
                             <input type="number" name="valor" step="0.01" min="0.01" id="valor" class="form-control" data-duas-casas
                                    required value="${investimento.valor}">
                         </div>
-
+                        <div class="form-text" data-estimativa="form"></div>
                     </div>
 
                     <div class="d-flex justify-content-center mt-4 gap-2">
@@ -162,5 +162,6 @@
 <script src="resources/js/bootstrap.bundle.js"></script>
 <script src="resources/js/duas-casas.js"></script>
 <script type="module" src="resources/js/painel-indicadores.js"></script>
+<script type="module" src="resources/js/estimativa-investimento.js"></script>
 </body>
 </html>

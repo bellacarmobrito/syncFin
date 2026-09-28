@@ -59,6 +59,7 @@
                                 <th class="text-start">Rendimento ao ano</th>
                                 <th class="text-start">Recorrência</th>
                                 <th class="text-start">Status</th>
+                                <th class="text-start">Estimativa</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -95,6 +96,15 @@
 
                                     <td>${investimento.recorrencia}</td>
                                     <td class="text-start">${investimento.status}</td>
+
+                                    <td class="text-start"
+                                    data-estimativa="linha"
+                                    data-valor="${investimento.valor}"
+                                    data-rendimento="${investimento.rendimento}"
+                                    data-inicio="${investimento.dataInvestimento}"
+                                    data-fim="${investimento.dataVencimento}"
+                                    data-status="${investimento.status}">
+                                    </td>
                                     <td class="text-center">
                                         <c:url var="linkEditar" value="investimento">
                                             <c:param name="acao" value="editar"/>
@@ -179,5 +189,6 @@
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
 <script type="module" src="resources/js/painel-indicadores.js"></script>
+<script type="module" src="resources/js/estimativa-investimento.js"></script>
 </body>
 </html>
