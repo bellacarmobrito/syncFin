@@ -5,7 +5,8 @@
         <span class="fs-5 fw-semibold">SyncFin</span>
     </a>
 
-    <ul class="nav nav-pills flex-column gap-1">
+    <div class="flex-grow-1 d-flex flex-column justify-content-center">
+    <ul class="nav nav-pills flex-column gap-2">
 
         <li class="nav-item">
             <a href="home" class="nav-link text-white">
@@ -61,8 +62,9 @@
             </a>
         </li>
     </ul>
+    </div>
 
-    <div class="mt-4 pt-3 border-top border-secondary">
+    <div class="pt-3 border-top border-secondary">
         <a href="visualizar-cadastro.jsp" class="nav-link text-white-50">
             <i class="bi bi-person me-2"></i> Meu perfil
         </a>

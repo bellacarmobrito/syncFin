@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,8 +25,9 @@
 
         <main class="flex-grow-1">
 
-            <h3 class="mt-5 mb-4 text-center" style="color: #1F2A44">
-                Olá <c:out value="${cliente.nomeCliente}"/>!
+            <h3 class="mt-4 mb-4 text-center" style="color: #1F2A44">
+                Olá <c:set var="primeiroNome" value="${fn:substringBefore(cliente.nomeCliente, ' ')}"/>
+                <span><c:out value="${empty primeiroNome ? cliente.nomeCliente : primeiroNome}"/></span>
             </h3>
 
             <div class="container mb-5">
