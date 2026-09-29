@@ -21,3 +21,6 @@ jobs:
 
       - name: Build and test
         run: mvn -B clean verify
+
+      - name: Verify Docker image builds
+        run: docker build -t syncfin-ci .
