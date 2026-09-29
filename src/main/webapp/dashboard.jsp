@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
-<div class="row g-4 mt-2">
+<div class="row g-4 mt-8">
 
     <div class="col-12 col-lg-4">
         <div class="card shadow-sm h-100 border-0">

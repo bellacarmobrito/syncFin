@@ -23,6 +23,12 @@ public class LoginFilter implements Filter {
         String ctx = req.getContextPath();
         String acao = req.getParameter("acao");
 
+        if (!url.startsWith(ctx + "/resources/")) {
+            resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+            resp.setHeader("Pragma", "no-cache");
+            resp.setHeader("Expires", "0");
+        }
+
         boolean usuarioLogado = (session != null && session.getAttribute("cliente") != null);
 
         boolean isRoot = url.equals(ctx) || url.equals(ctx + "/");

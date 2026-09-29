@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,8 +25,9 @@
 
         <main class="flex-grow-1">
 
-            <h3 class="mt-5 mb-4 text-center" style="color: #1F2A44">
-                Olá <c:out value="${cliente.nomeCliente}"/>!
+            <h3 class="mt-4 mb-4 text-center" style="color: #1F2A44">
+                Olá <c:set var="primeiroNome" value="${fn:substringBefore(cliente.nomeCliente, ' ')}"/>
+                <span><c:out value="${empty primeiroNome ? cliente.nomeCliente : primeiroNome}"/></span>
             </h3>
 
             <div class="container mb-5">
@@ -51,6 +53,25 @@
                             </div>
                         </div>
 
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header text-white" style="background-color: #1F2A44"><strong>Resumo
+                                Financeiro</strong>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Receitas:</strong> R$ <fmt:formatNumber value="${totalReceitas}"
+                                                                                   type="number"
+                                                                                   minFractionDigits="2"/></p>
+                                <p><strong>Despesas:</strong> R$ <fmt:formatNumber value="${totalDespesas}"
+                                                                                   type="number"
+                                                                                   minFractionDigits="2"/></p>
+                                <p><strong>Investimentos:</strong> R$ <fmt:formatNumber value="${totalInvestimentos}"
+                                                                                        type="number"
+                                                                                        minFractionDigits="2"/></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
                         <div class="card shadow-sm border-0">
                             <div class="card-header" style="background-color: #1F2A44"><strong class="text-white">Contas
                                 Bancárias</strong></div>
@@ -88,29 +109,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="card shadow-sm h-100 border-0">
-                            <div class="card-header text-white" style="background-color: #1F2A44"><strong>Resumo
-                                Financeiro</strong>
-                            </div>
-                            <div class="card-body">
-                                <p><strong>Receitas:</strong> R$ <fmt:formatNumber value="${totalReceitas}"
-                                                                                   type="number"
-                                                                                   minFractionDigits="2"/></p>
-                                <p><strong>Despesas:</strong> R$ <fmt:formatNumber value="${totalDespesas}"
-                                                                                   type="number"
-                                                                                   minFractionDigits="2"/></p>
-                                <p><strong>Investimentos:</strong> R$ <fmt:formatNumber value="${totalInvestimentos}"
-                                                                                        type="number"
-                                                                                        minFractionDigits="2"/></p>
-                            </div>
-                        </div>
-                    </div>
                     <%@include file="dashboard.jsp" %>
                 </div>
-
-
             </div>
         </main>
     </div>
