@@ -23,7 +23,7 @@
 </jsp:include>
 
 <div class="container">
-    <div class="mt-5 ms-5 me-5">
+    <div class="mt-5 mx-3 mx-md-5">
         <div class="card mb-3 shadow-sm">
             <div class="card-header text-black bg-white border-0">
                 <h5 class="card-header bg-white border-0 fw-bold" style="color: #1F2A44">Lista de Investimentos</h5>
@@ -49,6 +49,7 @@
                     </c:when>
 
                     <c:otherwise>
+                        <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                             <thead>
                             <tr>
@@ -125,6 +126,7 @@
                             </c:forEach>
                             </tbody>
                         </table>
+                        </div>
                         <a href="cadastro-investimento.jsp" class="btn btn-primary">Adicionar Investimento</a>
                     </c:otherwise>
                 </c:choose>
