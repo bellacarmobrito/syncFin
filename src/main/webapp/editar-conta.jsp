@@ -99,8 +99,12 @@
 
                     <div class="mb-3">
                         <label for="id-saldo"><strong>Saldo</strong></label><br>
-                        <input type="number" step="0.01" name="saldo" id="id-saldo" class="form-control"
-                               value="${conta.saldo}" required>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="number" step="0.01" name="saldo" id="id-saldo" class="form-control" data-duas-casas
+                                   value="${conta.saldo}" required>
+                        </div>
+
                     </div>
 
                     <div class="d-flex justify-content-center mt-4 gap-2">
@@ -115,5 +119,7 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script src="resources/js/duas-casas.js"></script>
+<script type="module" src="resources/js/autocomplete-bancos.js"></script>
 </body>
 </html>

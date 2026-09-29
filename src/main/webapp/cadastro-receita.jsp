@@ -66,7 +66,7 @@
 
                     <div class="mb-3">
                         <label for="dataRecebimento"><strong>Data de Recebimento</strong></label><br>
-                        <input type="date" name="dataRecebimento" id="dataRecebimento" class="form-control" required>
+                        <input type="date" name="dataRecebimento" id="dataRecebimento" class="form-control" data-padrao-hoje required>
                     </div>
 
                     <div class="mb-3">
@@ -86,8 +86,12 @@
 
                     <div class="mb-3">
                         <label for="valor"><strong>Valor da Receita</strong></label><br>
-                        <input type="number" name="valor" step="0.01" min="0.01" id="valor" class="form-control"
-                               required>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="number" name="valor" step="0.01" min="0.01" id="valor" class="form-control" data-duas-casas
+                                   required>
+                        </div>
+
                     </div>
 
                     <div class="d-flex justify-content-center mt-4">
@@ -99,5 +103,7 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script src="resources/js/data-padrao.js"></script>
+<script src="resources/js/duas-casas.js"></script>
 </body>
 </html>

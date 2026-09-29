@@ -69,7 +69,7 @@
 
                     <div class="mb-3">
                         <label for="dataInvestimento"><strong>Data do Investimento</strong></label><br>
-                        <input type="date" name="dataInvestimento" id="dataInvestimento" class="form-control" required>
+                        <input type="date" name="dataInvestimento" id="dataInvestimento" class="form-control" data-padrao-hoje required>
                     </div>
 
                     <div class="mb-3">
@@ -78,9 +78,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="rendimento"><strong>Rendimento</strong></label><br>
-                        <input type="number" name="rendimento" step="0.01" min="0.01" id="rendimento"
-                               class="form-control" required>
+                        <label for="rendimento"><strong>Rendimento ao ano</strong></label><br>
+                        <div class="input-group">
+                            <input type="number" name="rendimento" step="0.01" min="0.01" id="rendimento"
+                                   class="form-control" required data-duas-casas>
+                            <span class="input-group-text">%</span>
+                        </div>
+
+                        <div class="form-text" data-indicadores="dica"></div>
                     </div>
 
                     <div class="mb-3">
@@ -107,8 +112,12 @@
 
                     <div class="mb-3">
                         <label for="valor"><strong>Valor do Investimento</strong></label><br>
-                        <input type="number" name="valor" step="0.01" min="0.01" id="valor" class="form-control"
-                               required>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="number" name="valor" step="0.01" min="0.01" id="valor" class="form-control" data-duas-casas
+                                   required>
+                        </div>
+                        <div class="form-text" data-estimativa="form"></div>
                     </div>
 
                     <div class="d-flex justify-content-center mt-4">
@@ -120,5 +129,9 @@
 </main>
 <%@include file="footer.jsp" %>
 <script src="resources/js/bootstrap.bundle.js"></script>
+<script src="resources/js/data-padrao.js"></script>
+<script src="resources/js/duas-casas.js"></script>
+<script type="module" src="resources/js/estimativa-investimento.js"></script>
+<script type="module" src="resources/js/painel-indicadores.js"></script>
 </body>
 </html>
