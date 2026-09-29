@@ -5,7 +5,7 @@
         <span class="fs-5 fw-semibold">SyncFin</span>
     </a>
 
-    <ul class="nav nav-pills flex-column gap-2">
+    <ul class="nav nav-pills flex-column gap-1">
 
         <li class="nav-item">
             <a href="home" class="nav-link text-white">
@@ -62,7 +62,7 @@
         </li>
     </ul>
 
-    <div class="mt-auto pt-3 border-top border-secondary">
+    <div class="mt-4 pt-3 border-top border-secondary">
         <a href="visualizar-cadastro.jsp" class="nav-link text-white-50">
             <i class="bi bi-person me-2"></i> Meu perfil
         </a>

@@ -52,6 +52,25 @@
                         </div>
 
                         <div class="card shadow-sm border-0">
+                            <div class="card-header text-white" style="background-color: #1F2A44"><strong>Resumo
+                                Financeiro</strong>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Receitas:</strong> R$ <fmt:formatNumber value="${totalReceitas}"
+                                                                                   type="number"
+                                                                                   minFractionDigits="2"/></p>
+                                <p><strong>Despesas:</strong> R$ <fmt:formatNumber value="${totalDespesas}"
+                                                                                   type="number"
+                                                                                   minFractionDigits="2"/></p>
+                                <p><strong>Investimentos:</strong> R$ <fmt:formatNumber value="${totalInvestimentos}"
+                                                                                        type="number"
+                                                                                        minFractionDigits="2"/></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-0">
                             <div class="card-header" style="background-color: #1F2A44"><strong class="text-white">Contas
                                 Bancárias</strong></div>
                             <div class="card-body">
@@ -88,29 +107,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="card shadow-sm h-100 border-0">
-                            <div class="card-header text-white" style="background-color: #1F2A44"><strong>Resumo
-                                Financeiro</strong>
-                            </div>
-                            <div class="card-body">
-                                <p><strong>Receitas:</strong> R$ <fmt:formatNumber value="${totalReceitas}"
-                                                                                   type="number"
-                                                                                   minFractionDigits="2"/></p>
-                                <p><strong>Despesas:</strong> R$ <fmt:formatNumber value="${totalDespesas}"
-                                                                                   type="number"
-                                                                                   minFractionDigits="2"/></p>
-                                <p><strong>Investimentos:</strong> R$ <fmt:formatNumber value="${totalInvestimentos}"
-                                                                                        type="number"
-                                                                                        minFractionDigits="2"/></p>
-                            </div>
-                        </div>
-                    </div>
                     <%@include file="dashboard.jsp" %>
                 </div>
-
-
             </div>
         </main>
     </div>
