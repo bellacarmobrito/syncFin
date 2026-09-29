@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 
 <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
     <div class="container-fluid">
@@ -84,7 +85,8 @@
                             data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 14px">
                         <i class="bi bi-person-circle text-white fs-4"></i>
                         <span class="text-white">
-                                <c:out value="${cliente.nomeCliente}"/>
+                            <c:set var="primeiroNome" value="${fn:substringBefore(cliente.nomeCliente, ' ')}"/>
+                            <span><c:out value="${empty primeiroNome ? cliente.nomeCliente : primeiroNome}"/></span>
                         </span>
                     </button>
 

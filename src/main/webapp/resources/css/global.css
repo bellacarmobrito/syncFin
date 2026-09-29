@@ -33,7 +33,7 @@ h1, h2, h5, input, label {
 }
 
 input, label, textarea, input::placeholder {
-    font-size: 15px; !important;
+    font-size: 14px; !important;
 
 }
 
@@ -82,6 +82,7 @@ input, label, textarea, input::placeholder {
     border-radius: 12px;
     padding: 10px 12px;
     transition: 0.2s ease;
+    font-size: 14px;
 }
 
 .sidebar .nav-link:hover {
@@ -102,4 +103,8 @@ input, label, textarea, input::placeholder {
 
 .topbar {
     min-height: 72px;
+}
+
+.dropdown-menu {
+    --bs-dropdown-font-size: 14px;
 }
