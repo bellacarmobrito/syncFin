@@ -21,6 +21,12 @@ import java.sql.SQLException;
 @WebServlet("/cadastro")
 public class CadastroServelet extends HttpServlet {
 
+    private static final String EMAIL_DEMO = "demo@syncfin.app";
+
+    private boolean isContaDemo(Cadastro cliente) {
+        return cliente != null && EMAIL_DEMO.equalsIgnoreCase(cliente.getEmail());
+    }
+
     private Cadastro getClienteLogado(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession(false);
 
@@ -174,6 +180,13 @@ public class CadastroServelet extends HttpServlet {
             String email = req.getParameter("email");
             String senha = req.getParameter("senha");
 
+            if (isContaDemo(clienteLogado) && (!EMAIL_DEMO.equalsIgnoreCase(email) || (senha != null && !senha.isBlank()))) {
+                req.setAttribute("erro", "Esta é a conta de demonstração pública: e-mail e senha não podem ser alterados por aqui.");
+                req.setAttribute("cadastro", clienteLogado);
+                req.getRequestDispatcher("editar-cadastro.jsp").forward(req, resp);
+                return;
+            }
+
             Cadastro cadastro = new Cadastro();
             cadastro.setIdCliente(idCliente);
             cadastro.setNomeCliente(nomeCliente);
@@ -228,6 +241,12 @@ public class CadastroServelet extends HttpServlet {
 
         if (codigo != clienteLogado.getIdCliente()) {
             req.setAttribute("erro", "Cadastro não localizado ou acesso negado.");
+            listar(req, resp);
+            return;
+        }
+
+        if (isContaDemo(clienteLogado)) {
+            req.setAttribute("erro", "Esta é a conta de demonstração pública e não pode ser excluída.");
             listar(req, resp);
             return;
         }
