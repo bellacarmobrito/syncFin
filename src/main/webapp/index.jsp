@@ -14,13 +14,13 @@
 </head>
 <body>
 <%@include file="header-publico.jsp" %>
-<div class="container d-flex align-items-center justify-content-center min-vh-90 mt-5 gap-3">
-    <div class="row align-items-center justify-content-center mt-5">
+<div class="container d-flex align-items-center justify-content-center mt-4 mt-md-5 mb-5">
+    <div class="row align-items-center justify-content-center">
 
-        <div class="col-md-6">
-            <h1 class="mb-3">Controle suas <span class="badge text-white fw-bold" style="background-color: #1F2A44">finanças</span> sem planilha.</h1><br>
-            <p>Organizar as suas finanças nunca foi tão fácil. Com a <strong class="fw-bold">SyncFin</strong>, você tem tudo num único
-                lugar.</p> <br>
+        <div class="col-md-6 mb-5 mb-md-0">
+            <h1 class="mb-3">Controle suas <span class="badge text-white fw-bold" style="background-color: #1F2A44">finanças</span> sem planilha.</h1>
+            <p class="mb-4">Organizar as suas finanças nunca foi tão fácil. Com a <strong class="fw-bold">SyncFin</strong>, você tem tudo num único
+                lugar.</p>
             <a class="btn custom text-white fw-bold" href="cadastro-cliente.jsp">Cadastre-se</a>
         </div>
 
