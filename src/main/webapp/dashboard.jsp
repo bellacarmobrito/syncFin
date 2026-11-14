@@ -25,14 +25,14 @@
                                 <div class="list-group-item px-0">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <div class="fw-semibold">${r.categoria}</div>
+                                            <div class="fw-semibold"><c:out value="${r.categoria}"/></div>
                                             <small class="text-muted"><c:out value="${r.descricao}"/></small><br>
 
                                             <small class="text-muted">
                                                 <fmt:parseDate value="${r.dataRecebimento}" pattern="yyyy-MM-dd"
                                                                var="dataR"/>
                                                 <fmt:formatDate value="${dataR}" pattern="dd/MM/yyyy"/>
-                                                • ${r.status}
+                                                • <c:out value="${r.status}"/>
                                             </small>
                                         </div>
 
@@ -74,14 +74,14 @@
                                 <div class="list-group-item px-0">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <div class="fw-semibold">${d.categoria}</div>
+                                            <div class="fw-semibold"><c:out value="${d.categoria}"/></div>
                                             <small class="text-muted"><c:out value="${d.descricao}"/></small><br>
 
                                             <small class="text-muted">
                                                 <fmt:parseDate value="${d.vencimento}" pattern="yyyy-MM-dd"
                                                                var="dataD"/>
                                                 <fmt:formatDate value="${dataD}" pattern="dd/MM/yyyy"/>
-                                                • ${d.status}
+                                                • <c:out value="${d.status}"/>
                                             </small>
                                         </div>
 
@@ -123,7 +123,7 @@
                                 <div class="list-group-item px-0">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <div class="fw-semibold">${i.tipoInvestimento}</div>
+                                            <div class="fw-semibold"><c:out value="${i.tipoInvestimento}"/></div>
                                             <small class="text-muted">
                                                 Rendimento:
                                                     <fmt:formatNumber value="${i.rendimento}"
@@ -135,7 +135,7 @@
                                                 <fmt:parseDate value="${i.dataInvestimento}" pattern="yyyy-MM-dd"
                                                                var="dataI"/>
                                                 <fmt:formatDate value="${dataI}" pattern="dd/MM/yyyy"/>
-                                                • ${i.status}
+                                                • <c:out value="${i.status}"/>
                                             </small>
                                         </div>
 

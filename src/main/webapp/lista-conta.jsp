@@ -70,7 +70,7 @@
 
                                     <td><c:out value="${conta.agencia}"/></td>
                                     <td><c:out value="${conta.numeroConta}"/></td>
-                                    <td>${conta.tipoConta}</td>
+                                    <td><c:out value="${conta.tipoConta}"/></td>
                                     <td class="text-start">
                                         <fmt:formatNumber
                                                 value="${conta.saldo}"

@@ -61,7 +61,7 @@
                             <tbody>
                             <c:forEach items="${receitas}" var="receita">
                                 <tr>
-                                    <td class="text-start">${receita.categoria}</td>
+                                    <td class="text-start"><c:out value="${receita.categoria}"/></td>
                                     <td><c:out value="${receita.descricao}"/></td>
                                     <td class="text-start">
                                         <fmt:formatNumber
@@ -78,7 +78,7 @@
                                         />
                                         <fmt:formatDate value="${dataVencimentoFmt}" pattern="dd/MM/yyyy"/>
                                     </td>
-                                    <td class="text-start">${receita.status}</td>
+                                    <td class="text-start"><c:out value="${receita.status}"/></td>
                                     <td class="text-center">
                                         <c:url var="linkEditar" value="receita">
                                             <c:param name="acao" value="editar"/>
