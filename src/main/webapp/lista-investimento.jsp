@@ -66,7 +66,7 @@
                             <tbody>
                             <c:forEach items="${investimentos}" var="investimento">
                                 <tr>
-                                    <td class="text-start">${investimento.tipoInvestimento}</td>
+                                    <td class="text-start"><c:out value="${investimento.tipoInvestimento}"/></td>
                                     <td>
                                         <fmt:parseDate
                                                 value="${investimento.dataInvestimento}"
@@ -95,8 +95,8 @@
                                         <fmt:formatNumber value="${investimento.rendimento}" minFractionDigits="2" maxFractionDigits="2"/>%
                                     </td>
 
-                                    <td>${investimento.recorrencia}</td>
-                                    <td class="text-start">${investimento.status}</td>
+                                    <td><c:out value="${investimento.recorrencia}"/></td>
+                                    <td class="text-start"><c:out value="${investimento.status}"/></td>
 
                                     <td class="text-start"
                                     data-estimativa="linha"
@@ -104,7 +104,7 @@
                                     data-rendimento="${investimento.rendimento}"
                                     data-inicio="${investimento.dataInvestimento}"
                                     data-fim="${investimento.dataVencimento}"
-                                    data-status="${investimento.status}">
+                                    data-status="<c:out value="${investimento.status}"/>">
                                     </td>
                                     <td class="text-center">
                                         <c:url var="linkEditar" value="investimento">

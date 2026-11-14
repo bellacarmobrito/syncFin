@@ -93,7 +93,7 @@
                                                         <div>
                                                             <strong><c:out value="${conta.nomeInstituicao}"/></strong><br>
                                                             <p> Agência <c:out value="${conta.agencia}"/>, Conta <c:out value="${conta.numeroConta}"/>
-                                                                (${conta.tipoConta})</p>
+                                                                (<c:out value="${conta.tipoConta}"/>)</p>
                                                         </div>
                                                     </div>
 
